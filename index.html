@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מילים / Words – Hebrew English Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --card: #1a1a1a;
+    --border: #2a2a2a;
+    --accent: #e8c97a;
+    --accent2: #c97a8a;
+    --text: #f0ede6;
+    --muted: #7a7570;
+    --success: #7ac9a0;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Crimson Pro', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 9999; opacity: 0.4;
+  }
+
+  header { text-align: center; padding: 3rem 1rem 2rem; }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 900; letter-spacing: -0.02em; line-height: 1;
+    color: var(--accent);
+  }
+
+  header h1 span { color: var(--text); opacity: 0.5; font-weight: 700; }
+  header p { margin-top: 0.5rem; color: var(--muted); font-style: italic; font-size: 1.1rem; }
+
+  .divider {
+    width: 80px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    margin: 1.5rem auto;
+  }
+
+  .tabs {
+    display: flex; justify-content: center;
+    gap: 0.5rem; padding: 0 1rem; flex-wrap: wrap;
+  }
+
+  .tab {
+    background: var(--card); border: 1px solid var(--border);
+    color: var(--muted); padding: 0.7rem 1.8rem; border-radius: 100px;
+    cursor: pointer; font-family: 'Heebo', sans-serif; font-size: 0.9rem;
+    letter-spacing: 0.05em; transition: all 0.2s ease; text-transform: uppercase;
+  }
+
+  .tab:hover { border-color: var(--accent); color: var(--text); }
+  .tab.active { background: var(--accent); border-color: var(--accent); color: #0d0d0d; font-weight: 700; }
+
+  section {
+    display: none; max-width: 1000px;
+    margin: 2rem auto; padding: 0 1.5rem;
+    animation: fadeIn 0.3s ease;
+  }
+
+  section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== WORD LIST ===== */
+  .word-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+
+  .word-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem 1.4rem;
+    cursor: pointer; transition: all 0.2s ease; position: relative; overflow: hidden;
+  }
+
+  .word-card::after {
+    content: '🔊'; position: absolute; top: 0.8rem; right: 0.8rem;
+    font-size: 0.9rem; opacity: 0; transition: opacity 0.2s;
+  }
+
+  .word-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .word-card:hover::after { opacity: 1; }
+  .word-card:active { transform: scale(0.97); }
+
+  .word-card .wc-hebrew {
+    font-family: 'Heebo', sans-serif; font-size: 1.6rem; font-weight: 700;
+    direction: rtl; color: var(--accent); display: block;
+  }
+  .word-card .wc-english { font-size: 1.35rem; color: var(--text); margin-top: 0.3rem; font-style: normal; font-weight: 400; font-family: 'Heebo', sans-serif; }
+  .word-card .speak-hint { font-size: 0.7rem; color: var(--muted); margin-top: 0.5rem; opacity: 0.6; font-family: 'Heebo', sans-serif; }
+
+  /* ===== SHARED GAME CONTROLS ===== */
+  .game-controls {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+
+  .btn {
+    background: transparent; border: 1px solid var(--accent); color: var(--accent);
+    padding: 0.6rem 1.5rem; border-radius: 100px; cursor: pointer;
+    font-family: 'Heebo', sans-serif; font-size: 0.85rem;
+    letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.2s;
+  }
+
+  .btn:hover { background: var(--accent); color: #0d0d0d; }
+  .btn.success { border-color: var(--success); color: var(--success); }
+  .btn.success:hover { background: var(--success); color: #0d0d0d; }
+
+  .score-badge { font-family: 'Heebo', sans-serif; font-size: 0.85rem; color: var(--muted); margin-left: auto; }
+  .score-badge span { color: var(--accent); font-weight: 700; }
+
+  /* ===== MEMORY GAME ===== */
+  .memory-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem; }
+
+  @media (max-width: 600px) { .memory-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .mem-card { aspect-ratio: 0.75; perspective: 600px; cursor: pointer; }
+
+  .mem-card-inner {
+    width: 100%; height: 100%; position: relative;
+    transform-style: preserve-3d; transition: transform 0.4s ease; border-radius: var(--radius);
+  }
+
+  .mem-card.flipped .mem-card-inner,
+  .mem-card.matched .mem-card-inner { transform: rotateY(180deg); }
+
+  .mem-card-front, .mem-card-back {
+    position: absolute; inset: 0; border-radius: var(--radius);
+    backface-visibility: hidden; display: flex; align-items: center;
+    justify-content: center; text-align: center; padding: 0.5rem;
+    border: 1px solid var(--border);
+  }
+
+  .mem-card-front {
+    background: var(--card);
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.015) 4px, rgba(255,255,255,0.015) 5px);
+    font-size: 1.5rem; color: var(--muted);
+  }
+
+  .mem-card-back {
+    background: var(--surface); border-color: var(--accent);
+    transform: rotateY(180deg); flex-direction: column; gap: 0.3rem;
+  }
+
+  .mem-card.matched .mem-card-back { border-color: var(--success); background: rgba(122,201,160,0.08); }
+
+  .mem-card-back .mc-heb { font-family: 'Heebo', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--accent); direction: rtl; }
+  .mem-card-back .mc-eng { font-size: 1.05rem; color: var(--text); font-style: normal; font-family: 'Heebo', sans-serif; font-weight: 600; }
+  .mem-card.matched .mem-card-back .mc-heb { color: var(--success); }
+
+  /* ===== MATCH-UP — CLASSROOM STYLE ===== */
+  #match { max-width: 820px; }
+
+  .word-bank {
+    background: #1a2a15; border: 2px solid #3a5a2a;
+    border-radius: 16px; padding: 1.2rem 1.4rem; margin-bottom: 1.8rem; min-height: 80px;
+  }
+
+  .word-bank-label {
+    font-family: 'Heebo', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.14em; text-transform: uppercase; color: #6a9a5a; margin-bottom: 0.7rem;
+  }
+
+  .word-bank-chips { display: flex; flex-wrap: wrap; gap: 0.55rem; min-height: 42px; }
+
+  .chip {
+    padding: 0.5rem 1.2rem; border-radius: 10px;
+    font-family: 'Heebo', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; border: 3px solid transparent;
+    transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+    user-select: none; white-space: nowrap;
+  }
+
+  .chip:hover:not(.used) { transform: translateY(-3px) scale(1.05); box-shadow: 0 6px 16px rgba(0,0,0,0.4); }
+  .chip.selected { transform: translateY(-3px) scale(1.08); box-shadow: 0 8px 20px rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.8); }
+  .chip.used { opacity: 0.2; pointer-events: none; }
+
+  .cc0  { background: #f0a030; color: #1a0800; }
+  .cc1  { background: #e8e050; color: #1a1800; }
+  .cc2  { background: #50d878; color: #001a08; }
+  .cc3  { background: #50c8f0; color: #001018; }
+  .cc4  { background: #e850a0; color: #1a0018; }
+  .cc5  { background: #b878f0; color: #0a001a; }
+  .cc6  { background: #f06858; color: #1a0000; }
+  .cc7  { background: #40d8c0; color: #001a18; }
+  .cc8  { background: #98d848; color: #081800; }
+  .cc9  { background: #f0c080; color: #1a0800; }
+  .cc10 { background: #78b8f0; color: #001018; }
+  .cc11 { background: #f09050; color: #1a0500; }
+
+  .answer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 3rem;
+  }
+
+  @media (max-width: 560px) { .answer-grid { grid-template-columns: 1fr; gap: 0.6rem; } }
+
+  .answer-row {
+    display: flex; align-items: center; gap: 0.75rem; direction: rtl;
+  }
+
+  .answer-slot {
+    background: #ffffff; border: 2px solid #cccccc; border-radius: 10px;
+    width: 130px; min-width: 130px; height: 46px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    overflow: hidden; flex-shrink: 0;
+  }
+
+  .answer-slot:hover:not(.filled):not(.correct):not(.wrong) {
+    border-color: #888; background: #f5f5f5;
+  }
+
+  .answer-slot.filled { border-color: #aaa; }
+  .answer-slot.correct { background: #d4f5e2; border-color: #4caf84; pointer-events: none; }
+  .answer-slot.wrong { background: #ffe0e0; border-color: #d05060; animation: shake 0.35s; }
+
+  .slot-inner {
+    font-family: 'Heebo', sans-serif; font-size: 0.9rem; font-weight: 700;
+    padding: 0.15rem 0.6rem; border-radius: 6px; width: 100%; text-align: center;
+  }
+
+  .answer-label {
+    font-family: 'Heebo', sans-serif; font-size: 1.45rem; font-weight: 700;
+    color: var(--text); direction: rtl; text-align: right; flex: 1;
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .submit-row { margin-top: 1.6rem; display: flex; justify-content: center; }
+
+  .submit-btn {
+    background: var(--surface); border: 2px solid var(--border); color: var(--text);
+    padding: 0.8rem 3.5rem; border-radius: 100px; cursor: pointer;
+    font-family: 'Heebo', sans-serif; font-size: 1rem; font-weight: 700;
+    letter-spacing: 0.04em; transition: all 0.2s;
+  }
+
+  .submit-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .submit-btn:active { transform: scale(0.97); }
+
+  .match-progress {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 100px; height: 6px; margin-bottom: 1.3rem; overflow: hidden;
+  }
+
+  .match-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--success));
+    border-radius: 100px; transition: width 0.4s ease; width: 0%;
+  }
+
+  /* ===== EDIT WORDS ===== */
+  .edit-toolbar {
+    display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;
+    margin-bottom: 1.2rem; padding: 1rem 1.2rem;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+
+  .edit-toolbar-label {
+    font-family: 'Heebo', sans-serif; font-size: 0.7rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
+    width: 100%; margin-bottom: 0.2rem;
+  }
+
+  .csv-label {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 0.5rem 1.1rem; border-radius: 100px; cursor: pointer;
+    font-family: 'Heebo', sans-serif; font-size: 0.8rem;
+    letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.2s;
+  }
+  .csv-label:hover { border-color: var(--accent); color: var(--accent); }
+  #csvFileInput { display: none; }
+
+  .csv-hint {
+    font-family: 'Heebo', sans-serif; font-size: 0.72rem;
+    color: var(--muted); font-style: italic;
+  }
+
+  .edit-row {
+    display: grid; grid-template-columns: 1fr auto 1fr auto;
+    gap: 0.5rem; align-items: center; margin-bottom: 0.55rem; animation: fadeIn 0.2s ease;
+  }
+
+  .edit-input {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 0.7rem 1rem; color: var(--text); font-size: 1.05rem; outline: none;
+    transition: border-color 0.2s; width: 100%;
+  }
+
+  .edit-input:focus { border-color: var(--accent); }
+  .edit-input.heb-in { font-family: 'Heebo', sans-serif; direction: rtl; text-align: right; color: var(--accent); font-weight: 700; font-size: 1.15rem; }
+  .edit-input.eng-in { font-family: 'Crimson Pro', serif; font-style: italic; }
+  .edit-input::placeholder { color: var(--muted); opacity: 0.5; font-style: italic; }
+  .edit-input.translating { opacity: 0.5; }
+
+  .translate-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 0.85rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .translate-btn:hover { border-color: #78b8f0; color: #78b8f0; background: rgba(120,184,240,0.1); }
+  .translate-btn.spinning { animation: spin 0.7s linear infinite; pointer-events: none; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .delete-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0;
+  }
+  .delete-btn:hover { border-color: #c97a7a; color: #c97a7a; background: rgba(201,122,122,0.1); }
+
+  .edit-header {
+    display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 0.5rem;
+    margin-bottom: 0.5rem; padding: 0 0 0.4rem; border-bottom: 1px solid var(--border);
+  }
+  .edit-header span { font-family: 'Heebo', sans-serif; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+  .edit-header span.heb-label { text-align: right; }
+
+  /* ===== TOAST & WIN ===== */
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--accent); color: #0d0d0d;
+    padding: 0.7rem 2rem; border-radius: 100px;
+    font-family: 'Heebo', sans-serif; font-weight: 700; font-size: 0.9rem;
+    transition: transform 0.3s ease; z-index: 100;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success-toast { background: var(--success); }
+
+  .win-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+    z-index: 50; align-items: center; justify-content: center;
+  }
+
+  .win-overlay.show { display: flex; }
+
+  .win-box {
+    background: var(--card); border: 1px solid var(--accent);
+    border-radius: 20px; padding: 3rem; text-align: center; max-width: 400px;
+  }
+
+  .win-box h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--accent); margin-bottom: 0.5rem; }
+  .win-box p { color: var(--muted); margin-bottom: 1.5rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>מילים <span>/</span> Words</h1>
+  <p>Hebrew · English Vocabulary</p>
+  <div class="divider"></div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('words',this)">📖 רשימת מילים</button>
+  <button class="tab" onclick="showTab('memory',this)">🃏 משחק זיכרון</button>
+  <button class="tab" onclick="showTab('match',this)">🔗 התאמה</button>
+  <button class="tab" onclick="showTab('edit',this)">✏️ ערוך מילים</button>
+</div>
+
+<!-- WORD LIST -->
+<section id="words" class="active">
+  <div class="word-grid" id="wordGrid"></div>
+</section>
+
+<!-- MEMORY GAME -->
+<section id="memory">
+  <div class="game-controls">
+    <button class="btn" onclick="initMemory()">↺ New Game</button>
+    <div class="score-badge">Matches: <span id="memScore">0</span> / <span id="memTotal">12</span> &nbsp;|&nbsp; Moves: <span id="memMoves">0</span></div>
+  </div>
+  <div class="memory-grid" id="memoryGrid"></div>
+</section>
+
+<!-- MATCH-UP — CLASSROOM STYLE -->
+<section id="match">
+  <div class="game-controls">
+    <button class="btn" onclick="initMatch()">↺ New Game</button>
+    <div class="score-badge">Correct: <span id="matchScore">0</span> / <span id="matchTotal">12</span></div>
+  </div>
+  <div class="match-progress"><div class="match-progress-bar" id="matchBar"></div></div>
+
+  <div class="word-bank">
+    <div class="word-bank-label">🔊 Click a word to select &amp; hear it — then click its matching box below</div>
+    <div class="word-bank-chips" id="wordBankChips"></div>
+  </div>
+
+  <div class="answer-grid" id="answerGrid"></div>
+
+  <div class="submit-row">
+    <button class="submit-btn" onclick="submitAnswers()">Submit Answers</button>
+  </div>
+</section>
+
+<!-- EDIT WORDS -->
+<section id="edit">
+  <div class="game-controls">
+    <div style="font-family:'Heebo',sans-serif;font-size:0.8rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;">
+      מספר זוגות מילים: <span id="pairCount" style="color:var(--accent);font-weight:700;">12</span>
+    </div>
+    <button class="btn" onclick="addEditRow()" style="margin-left:auto;">+ הוסף זוג מילים</button>
+    <button class="btn success" onclick="saveEdits()">✓ שמור שינויים</button>
+  </div>
+
+  <!-- Toolbar: CSV import -->
+  <div class="edit-toolbar">
+    <div class="edit-toolbar-label">ייבוא &amp; כלים</div>
+    <label class="csv-label" for="csvFileInput">
+      📂 ייבוא CSV
+    </label>
+    <input type="file" id="csvFileInput" accept=".csv,.txt" onchange="importCSV(this)">
+    <span class="csv-hint">CSV format: one pair per row — <code style="color:var(--accent)">Hebrew,English</code> &nbsp;or&nbsp; <code style="color:var(--accent)">English,Hebrew</code></span>
+  </div>
+
+  <!-- Column headers -->
+  <div class="edit-header">
+    <span class="heb-label">עברית Hebrew</span>
+    <span></span>
+    <span>English</span>
+    <span></span>
+  </div>
+
+  <div id="editList"></div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<div class="win-overlay" id="winOverlay">
+  <div class="win-box">
+    <h2 id="winTitle">🎉 Well Done!</h2>
+    <p id="winMessage"></p>
+    <button class="btn success" id="winBtn">Play Again</button>
+  </div>
+</div>
+
+<script>
+let WORDS = [
+  { hebrew: 'הרבה',  english: 'a lot of' },
+  { hebrew: 'לנצח',  english: 'win' },
+  { hebrew: 'שחמט',  english: 'chess' },
+  { hebrew: 'ראשון', english: 'first' },
+  { hebrew: 'חשוב',  english: 'important' },
+  { hebrew: 'זקן',   english: 'old' },
+  { hebrew: 'אנשים', english: 'people' },
+  { hebrew: 'מיוחד', english: 'special' },
+  { hebrew: 'צעיר',  english: 'young' },
+  { hebrew: 'ביחד',  english: 'together' },
+  { hebrew: 'ללמוד', english: 'learn' },
+  { hebrew: 'תשעים', english: 'ninety' },
+];
+
+const CHIP_CLASSES = ['cc0','cc1','cc2','cc3','cc4','cc5','cc6','cc7','cc8','cc9','cc10','cc11'];
+
+// ── SPEECH ──────────────────────────────────────────────
+function speak(word) {
+  if (!window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'en-US'; u.rate = 0.9;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+
+// ── WORD LIST ───────────────────────────────────────────
+function buildWordList() {
+  const grid = document.getElementById('wordGrid');
+  grid.innerHTML = '';
+  WORDS.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'word-card';
+    card.innerHTML = `
+      <span class="wc-hebrew">${w.hebrew}</span>
+      <div class="wc-english">${w.english}</div>
+      <div class="speak-hint">Click to hear pronunciation</div>`;
+    card.onclick = () => {
+      speak(w.english);
+      card.style.borderColor = 'var(--accent)';
+      setTimeout(() => card.style.borderColor = '', 600);
+    };
+    grid.appendChild(card);
+  });
+}
+
+// ── MEMORY GAME ─────────────────────────────────────────
+let memFlipped = [], memMatched = 0, memMoves = 0, memLocked = false;
+
+function initMemory() {
+  memFlipped = []; memMatched = 0; memMoves = 0; memLocked = false;
+  document.getElementById('memScore').textContent = 0;
+  document.getElementById('memMoves').textContent = 0;
+  document.getElementById('memTotal').textContent = WORDS.length;
+
+  const cards = [];
+  WORDS.forEach((w, i) => {
+    cards.push({ id: i, type: 'hebrew', word: w.hebrew });
+    cards.push({ id: i, type: 'english', word: w.english });
+  });
+  for (let i = cards.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [cards[i], cards[j]] = [cards[j], cards[i]];
+  }
+
+  const grid = document.getElementById('memoryGrid');
+  const cols = WORDS.length <= 6 ? 4 : WORDS.length <= 10 ? 5 : 6;
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  grid.innerHTML = '';
+
+  cards.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'mem-card';
+    el.dataset.id = c.id; el.dataset.type = c.type; el.dataset.word = c.word;
+    el.innerHTML = `
+      <div class="mem-card-inner">
+        <div class="mem-card-front">✦</div>
+        <div class="mem-card-back">
+          <div class="${c.type==='hebrew'?'mc-heb':'mc-eng'}">${c.word}</div>
+        </div>
+      </div>`;
+    el.onclick = () => flipMemCard(el);
+    grid.appendChild(el);
+  });
+}
+
+function flipMemCard(el) {
+  if (memLocked || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+  el.classList.add('flipped');
+  if (el.dataset.type === 'english') speak(el.dataset.word);
+  memFlipped.push(el);
+  if (memFlipped.length === 2) {
+    memLocked = true; memMoves++;
+    document.getElementById('memMoves').textContent = memMoves;
+    const [a, b] = memFlipped;
+    if (a.dataset.id === b.dataset.id && a.dataset.type !== b.dataset.type) {
+      a.classList.add('matched'); b.classList.add('matched');
+      memMatched++;
+      document.getElementById('memScore').textContent = memMatched;
+      memFlipped = []; memLocked = false;
+      if (memMatched === WORDS.length) setTimeout(() => showWin('memory'), 400);
+    } else {
+      setTimeout(() => {
+        a.classList.remove('flipped'); b.classList.remove('flipped');
+        memFlipped = []; memLocked = false;
+      }, 900);
+    }
+  }
+}
+
+// ── MATCH-UP GAME ────────────────────────────────────────
+let selectedChip = null; // { el, english, ccClass }
+let chipColorMap  = {};  // english -> cc class
+
+function initMatch() {
+  selectedChip = null; chipColorMap = {};
+  document.getElementById('matchScore').textContent = 0;
+  document.getElementById('matchTotal').textContent = WORDS.length;
+  document.getElementById('matchBar').style.width = '0%';
+
+  const shuffledChips = [...WORDS].sort(() => Math.random() - 0.5);
+  shuffledChips.forEach((w, i) => {
+    chipColorMap[w.english] = CHIP_CLASSES[i % CHIP_CLASSES.length];
+  });
+
+  // Word bank
+  const bank = document.getElementById('wordBankChips');
+  bank.innerHTML = '';
+  shuffledChips.forEach(w => {
+    const chip = document.createElement('div');
+    chip.className = `chip ${chipColorMap[w.english]}`;
+    chip.textContent = w.english;
+    chip.dataset.english = w.english;
+    chip.id = 'chip__' + encodeURIComponent(w.english);
+    chip.onclick = () => { speak(w.english); selectChip(chip, w.english); };
+    bank.appendChild(chip);
+  });
+
+  // Answer rows
+  const shuffledRows = [...WORDS].sort(() => Math.random() - 0.5);
+  const grid = document.getElementById('answerGrid');
+  grid.innerHTML = '';
+  shuffledRows.forEach(w => {
+    const row = document.createElement('div');
+    row.className = 'answer-row';
+
+    const slot = document.createElement('div');
+    slot.className = 'answer-slot';
+    slot.dataset.hebrew = w.hebrew;
+    slot.dataset.correct = w.english;
+    slot.onclick = () => placeChip(slot);
+
+    const label = document.createElement('div');
+    label.className = 'answer-label';
+    label.textContent = w.hebrew;
+
+    row.appendChild(slot);
+    row.appendChild(label);
+    grid.appendChild(row);
+  });
+}
+
+function selectChip(el, english) {
+  document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
+  if (selectedChip && selectedChip.english === english) { selectedChip = null; return; }
+  el.classList.add('selected');
+  selectedChip = { el, english, ccClass: chipColorMap[english] };
+}
+
+function placeChip(slotEl) {
+  if (!selectedChip || slotEl.classList.contains('correct')) return;
+  const { el: chipEl, english, ccClass } = selectedChip;
+
+  // Return previous chip in slot to bank
+  if (slotEl.dataset.placed) {
+    const prev = document.getElementById('chip__' + encodeURIComponent(slotEl.dataset.placed));
+    if (prev) prev.classList.remove('used');
+  }
+
+  chipEl.classList.add('used');
+  chipEl.classList.remove('selected');
+  slotEl.dataset.placed = english;
+  slotEl.classList.add('filled');
+  slotEl.classList.remove('wrong');
+  slotEl.innerHTML = `<div class="slot-inner ${ccClass}">${english}</div>`;
+
+  selectedChip = null;
+}
+
+function submitAnswers() {
+  const slots = document.querySelectorAll('.answer-slot');
+  let anyUnfilled = false;
+  let newCorrect = 0;
+
+  slots.forEach(slot => {
+    if (slot.classList.contains('correct')) { newCorrect++; return; }
+    if (!slot.dataset.placed) { anyUnfilled = true; return; }
+
+    if (slot.dataset.placed === slot.dataset.correct) {
+      slot.classList.add('correct');
+      slot.classList.remove('filled', 'wrong');
+      newCorrect++;
+    } else {
+      slot.classList.add('wrong');
+      // Return chip
+      const prev = document.getElementById('chip__' + encodeURIComponent(slot.dataset.placed));
+      if (prev) prev.classList.remove('used');
+      slot.innerHTML = '';
+      slot.classList.remove('filled');
+      delete slot.dataset.placed;
+    }
+  });
+
+  if (anyUnfilled) { showToast('Fill in all boxes first!'); return; }
+
+  document.getElementById('matchScore').textContent = newCorrect;
+  document.getElementById('matchBar').style.width = (newCorrect / WORDS.length * 100) + '%';
+
+  if (newCorrect === WORDS.length) {
+    setTimeout(() => showWin('match'), 400);
+  } else {
+    showToast(`${newCorrect}/${WORDS.length} correct — keep going!`);
+  }
+}
+
+// ── EDIT WORDS ───────────────────────────────────────────
+function buildEditList() {
+  const list = document.getElementById('editList');
+  list.innerHTML = '';
+  WORDS.forEach(w => list.appendChild(makeEditRow(w.hebrew, w.english)));
+  updatePairCount();
+}
+
+function makeEditRow(hebrew='', english='') {
+  const row = document.createElement('div');
+  row.className = 'edit-row';
+  row.innerHTML = `
+    <input class="edit-input heb-in" type="text" value="${hebrew}" placeholder="עברית..." dir="rtl">
+    <button class="translate-btn" onclick="translateRow(this)" title="Auto-translate Hebrew → English">🌐</button>
+    <input class="edit-input eng-in" type="text" value="${english}" placeholder="English...">
+    <button class="delete-btn" onclick="deleteRow(this)" title="Remove">×</button>`;
+  return row;
+}
+
+async function translateRow(btn) {
+  const row = btn.closest('.edit-row');
+  const hebInput = row.querySelector('.heb-in');
+  const engInput = row.querySelector('.eng-in');
+  const hebrew = hebInput.value.trim();
+  if (!hebrew) { showToast('Type a Hebrew word first'); return; }
+
+  btn.classList.add('spinning');
+  btn.textContent = '⟳';
+  engInput.classList.add('translating');
+
+  try {
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(hebrew)}&langpair=he|en`;
+    const res = await fetch(url);
+    const data = await res.json();
+    const translation = data?.responseData?.translatedText;
+    if (translation && data.responseStatus === 200) {
+      engInput.value = translation.toLowerCase();
+      engInput.style.borderColor = 'var(--success)';
+      setTimeout(() => engInput.style.borderColor = '', 1500);
+    } else {
+      showToast('Translation not found');
+    }
+  } catch (e) {
+    showToast('Translation failed — check internet connection');
+  } finally {
+    btn.classList.remove('spinning');
+    btn.textContent = '🌐';
+    engInput.classList.remove('translating');
+  }
+}
+
+function importCSV(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const lines = text.split(/\r?\n/).filter(l => l.trim());
+    const imported = [];
+    let errors = 0;
+
+    lines.forEach((line, i) => {
+      // Support comma or tab separated
+      const sep = line.includes('\t') ? '\t' : ',';
+      const parts = line.split(sep).map(p => p.trim().replace(/^["']|["']$/g, ''));
+      if (parts.length < 2) { errors++; return; }
+
+      let hebrew, english;
+      // Auto-detect which column is Hebrew (contains Hebrew chars)
+      const isHebrew = s => /[\u0590-\u05FF]/.test(s);
+      if (isHebrew(parts[0])) {
+        hebrew = parts[0]; english = parts[1];
+      } else if (isHebrew(parts[1])) {
+        hebrew = parts[1]; english = parts[0];
+      } else {
+        // Fallback: assume col1=Hebrew, col2=English
+        hebrew = parts[0]; english = parts[1];
+      }
+
+      if (hebrew && english) imported.push({ hebrew, english });
+      else errors++;
+    });
+
+    if (imported.length === 0) {
+      showToast('No valid pairs found in CSV');
+      input.value = '';
+      return;
+    }
+
+    // Ask: replace or append
+    const action = confirm(
+      `Found ${imported.length} word pair${imported.length>1?'s':''} in "${file.name}".\n\nClick OK to REPLACE current words, or Cancel to APPEND to existing list.`
+    );
+
+    if (action) {
+      WORDS = imported;
+    } else {
+      // Merge, avoid exact duplicates
+      const existing = new Set(WORDS.map(w => w.hebrew));
+      imported.forEach(w => { if (!existing.has(w.hebrew)) WORDS.push(w); });
+    }
+
+    buildWordList();
+    buildEditList();
+    const msg = errors > 0
+      ? `✓ Imported ${imported.length} pairs (${errors} skipped)`
+      : `✓ Imported ${imported.length} pairs!`;
+    showToast(msg, true);
+    input.value = '';
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function addEditRow() {
+  const list = document.getElementById('editList');
+  list.appendChild(makeEditRow());
+  updatePairCount();
+  const rows = list.querySelectorAll('.edit-row');
+  rows[rows.length-1].querySelector('.heb-in').focus();
+}
+
+function deleteRow(btn) {
+  if (document.querySelectorAll('.edit-row').length <= 2) { showToast('Minimum 2 pairs'); return; }
+  btn.closest('.edit-row').remove();
+  updatePairCount();
+}
+
+function updatePairCount() {
+  document.getElementById('pairCount').textContent = document.querySelectorAll('.edit-row').length;
+}
+
+function saveEdits() {
+  const rows = document.querySelectorAll('.edit-row');
+  const newWords = []; let valid = true;
+  rows.forEach(row => {
+    const h = row.querySelector('.heb-in').value.trim();
+    const e = row.querySelector('.eng-in').value.trim();
+    if (!h || !e) { valid = false; return; }
+    newWords.push({ hebrew: h, english: e });
+  });
+  if (!valid) { showToast('Please fill in all fields ✗'); return; }
+  if (newWords.length < 2) { showToast('Add at least 2 pairs'); return; }
+  WORDS = newWords;
+  buildWordList();
+  showToast(`✓ ${WORDS.length} pairs saved!`, true);
+}
+
+// ── HELPERS ──────────────────────────────────────────────
+function showTab(name, tabEl) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  tabEl.classList.add('active');
+  if (name === 'memory') initMemory();
+  if (name === 'match') initMatch();
+  if (name === 'edit') buildEditList();
+}
+
+let toastTimer;
+function showToast(msg, success=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (success ? ' success-toast' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+function showWin(game) {
+  const overlay = document.getElementById('winOverlay');
+  const btn = document.getElementById('winBtn');
+  document.getElementById('winTitle').textContent = game === 'memory' ? '🎉 Brilliant!' : '🏆 Perfect!';
+  document.getElementById('winMessage').textContent = game === 'memory'
+    ? `You matched all ${WORDS.length} pairs in ${memMoves} moves!`
+    : `You matched all ${WORDS.length} Hebrew–English pairs!`;
+  overlay.classList.add('show');
+  btn.onclick = () => {
+    overlay.classList.remove('show');
+    game === 'memory' ? initMemory() : initMatch();
+  };
+}
+
+// Init
+buildWordList();
+</script>
+</body>
+</html>
