@@ -6,6 +6,11 @@
 <title>אלף-בית לימוד אותיות כתב שונות מאותיות דפוס</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
+/* Expose locally-installed Guttman Yad to canvas */
+@font-face { font-family: 'Guttman Yad'; src: local('Guttman Yad'); }
+@font-face { font-family: 'Guttman Kav'; src: local('Guttman Kav'); }
+@font-face { font-family: 'Guttman Yad-Brush'; src: local('Guttman Yad-Brush'); }
+@font-face { font-family: 'Guttman Yad Light'; src: local('Guttman Yad Light'); }
 :root{--bg:#0d0d0d;--surface:#141414;--card:#1a1a1a;--border:#2a2a2a;--accent:#b878f0;--accent2:#e8c97a;--text:#f0ede6;--muted:#7a7570;--success:#7ac9a0;--radius:12px;}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:'Heebo',sans-serif;min-height:100vh;overflow-x:hidden;}
@@ -185,8 +190,11 @@ section.active{display:block;}
     <button class="btn" onclick="startSnake()">↺ משחק חדש</button>
     <div class="score-badge">ניקוד: <span id="snakeScore">0</span> &nbsp;|&nbsp; מהירות: <span id="snakeSpeed">1</span></div>
   </div>
-  <div id="snakeStatus">🐍 ראש הנחש = אות דפוס. אכל את הצורה הכתובה שלו כדי לגדול!</div>
-  <canvas id="snakeCanvas" width="600" height="440"></canvas>
+  <div id="snakeStatus">🐍 ראש הנחש = אות בכתב יד. מצא את אות הדפוס המתאימה!</div>
+  <div style="position:relative;display:block;width:fit-content;margin:0 auto;">
+    <canvas id="snakeCanvas" width="600" height="440"></canvas>
+    <div id="snakeHeadLabel" style="position:absolute;pointer-events:none;z-index:10;display:none;"></div>
+  </div>
   <div class="snake-hint">↑ ↓ ← → או WASD · מגע: החלק</div>
 </section>
 <div class="toast" id="toast"></div>
@@ -590,6 +598,12 @@ const SZ=40;
 
 function startSnake() {
   stopSnake();
+  // Ensure Guttman Yad is loaded for canvas before starting
+  document.fonts.load('24px "Guttman Yad"').then(()=>{
+    _startSnakeInner();
+  }).catch(()=>_startSnakeInner());
+}
+function _startSnakeInner() {
   const cv=document.getElementById('snakeCanvas');
   const cols=Math.floor(cv.width/SZ), rows=Math.floor(cv.height/SZ);
   snkDir={x:1,y:0}; snkNxt={x:1,y:0}; snkScore=0; snkLvl=1;
@@ -606,7 +620,7 @@ function spawnFood(cols,rows) {
   snkFoods=[];
   snkTarget = AB[Math.floor(Math.random()*AB.length)];
   snkPrint = snkTarget.p;
-  document.getElementById('snakeStatus').textContent=`🐍 אות נוכחית: ${snkTarget.p} (${snkTarget.name})`;
+  document.getElementById('snakeStatus').textContent=`🐍 אות בכתב יד על הנחש — מצא את אות הדפוס! (${snkTarget.name})`;
   const dec = AB.filter(l=>l.name!==snkTarget.name).sort(()=>Math.random()-0.5).slice(0,4);
   [{l:snkTarget,ok:true},...dec.map(d=>({l:d,ok:false}))].sort(()=>Math.random()-0.5).forEach(f=>{
     let pos;
@@ -644,6 +658,7 @@ function snkTick(cols,rows) {
 
 function snkDie() {
   stopSnake();
+  const lbl=document.getElementById('snakeHeadLabel'); if(lbl) lbl.style.display='none';
   const cv=document.getElementById('snakeCanvas'),ctx=cv.getContext('2d');
   ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(0,0,cv.width,cv.height);
   ctx.fillStyle='#b878f0'; ctx.font='bold 34px Heebo,serif'; ctx.textAlign='center';
@@ -662,15 +677,15 @@ function drawSnake(cols,rows) {
   ctx.strokeStyle='rgba(255,255,255,0.03)'; ctx.lineWidth=0.5;
   for(let x=0;x<cols;x++){ctx.beginPath();ctx.moveTo(x*SZ,0);ctx.lineTo(x*SZ,cv.height);ctx.stroke();}
   for(let y=0;y<rows;y++){ctx.beginPath();ctx.moveTo(0,y*SZ);ctx.lineTo(cv.width,y*SZ);ctx.stroke();}
-  // foods — draw background box then letter using drawLetterOnCanvas on a temp canvas
+  // foods — draw background box then PRINT letter
   snkFoods.forEach(f=>{
     ctx.fillStyle=f.ok?'rgba(122,201,160,0.2)':'rgba(184,120,240,0.15)';
     ctx.strokeStyle=f.ok?'#7ac9a0':'#b878f0'; ctx.lineWidth=2;
     rr(ctx,f.x*SZ+2,f.y*SZ+2,SZ-4,SZ-4,8); ctx.fill(); ctx.stroke();
-    // draw letter using handwriting font
+    // draw letter in PRINT font
     const col = f.ok ? '#7ac9a0' : '#c9a8f0';
     ctx.fillStyle = col;
-    ctx.font = `${SZ*0.6}px "Guttman Yad", "Guttman Kav", cursive`;
+    ctx.font = `bold ${SZ*0.6}px Heebo, sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(f.p, f.x*SZ+SZ/2, f.y*SZ+SZ/2+2);
@@ -685,10 +700,21 @@ function drawSnake(cols,rows) {
   const h=snkBody[0];
   ctx.fillStyle='#e8c97a'; rr(ctx,h.x*SZ+1,h.y*SZ+1,SZ-2,SZ-2,10); ctx.fill();
   ctx.strokeStyle='#0d0d0d'; ctx.lineWidth=1.5; ctx.stroke();
-  ctx.fillStyle='#0d0d0d';
-  ctx.font=`bold ${SZ*0.52}px Heebo,sans-serif`;
-  ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.fillText(snkPrint, h.x*SZ+SZ/2, h.y*SZ+SZ/2+2);
+  // Handwriting letter via DOM overlay (makeLetterEl is proven to render Guttman Yad)
+  const lbl=document.getElementById('snakeHeadLabel');
+  if(lbl){
+    lbl.innerHTML='';
+    const el=makeLetterEl(snkPrint,'#0d0d0d',(SZ*0.65)+'px');
+    el.style.lineHeight='1';
+    lbl.appendChild(el);
+    lbl.style.display='flex';
+    lbl.style.alignItems='center';
+    lbl.style.justifyContent='center';
+    lbl.style.left=(h.x*SZ+2)+'px';
+    lbl.style.top=(h.y*SZ+2)+'px';
+    lbl.style.width=(SZ-4)+'px';
+    lbl.style.height=(SZ-4)+'px';
+  }
 }
 
 function rr(ctx,x,y,w,h,r){
