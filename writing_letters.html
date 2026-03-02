@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>האלף-בית — Hebrew Alphabet</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d0d;--surface:#141414;--card:#1a1a1a;--border:#2a2a2a;--accent:#b878f0;--accent2:#e8c97a;--text:#f0ede6;--muted:#7a7570;--success:#7ac9a0;--radius:12px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Heebo',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+header{text-align:center;padding:2rem 1rem 1.2rem;}
+header h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,4vw,3.2rem);font-weight:900;color:var(--accent);}
+header p{margin-top:0.4rem;color:var(--muted);font-style:italic;font-size:1rem;}
+.divider{width:70px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:1rem auto;}
+.tabs{display:flex;justify-content:center;gap:0.5rem;padding:0 1rem;flex-wrap:wrap;}
+.tab{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:0.65rem 1.5rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:0.88rem;letter-spacing:0.05em;transition:all 0.2s;text-transform:uppercase;}
+.tab:hover{border-color:var(--accent);color:var(--text);}
+.tab.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
+section{display:none;max-width:1080px;margin:2rem auto;padding:0 1.5rem;animation:fadeIn 0.3s ease;}
+section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* LETTER GRID */
+.letter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.9rem;}
+.letter-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:0.8rem 0.6rem;text-align:center;transition:border-color 0.2s,transform 0.2s;}
+.letter-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.lc-row{display:flex;justify-content:center;align-items:center;margin-bottom:0.55rem;}
+.lc-half{flex:1;display:flex;flex-direction:column;align-items:center;padding:0.3rem 0.2rem;}
+.lc-half:first-child{border-right:1px solid var(--border);}
+.lc-label{font-size:0.46rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:3px;}
+.lc-print{font-family:'Heebo',sans-serif;font-size:2.4rem;font-weight:700;color:var(--accent2);line-height:1;}
+.lc-name{font-weight:700;font-size:0.85rem;color:var(--text);}
+.lc-sound{font-size:0.7rem;color:var(--muted);font-style:italic;}
+.lc-num{font-size:0.58rem;color:var(--border);margin-top:0.15rem;}
+
+/* BTN */
+.btn{background:transparent;border:1px solid var(--accent);color:var(--accent);padding:0.6rem 1.4rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;transition:all 0.2s;}
+.btn:hover{background:var(--accent);color:#0d0d0d;}
+.btn.success{border-color:var(--success);color:var(--success);}
+.btn.success:hover{background:var(--success);color:#0d0d0d;}
+.game-controls{display:flex;align-items:center;gap:1rem;margin-bottom:1.4rem;flex-wrap:wrap;}
+.score-badge{font-size:0.85rem;color:var(--muted);margin-left:auto;}
+.score-badge span{color:var(--accent);font-weight:700;}
+
+/* MEMORY */
+.memory-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:0.55rem;}
+@media(max-width:600px){.memory-grid{grid-template-columns:repeat(4,1fr);}}
+.mem-card{aspect-ratio:0.82;perspective:600px;cursor:pointer;}
+.mem-card-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.4s;border-radius:var(--radius);}
+.mem-card.flipped .mem-card-inner,.mem-card.matched .mem-card-inner{transform:rotateY(180deg);}
+.mem-card-front,.mem-card-back{position:absolute;inset:0;border-radius:var(--radius);backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:0.3rem;border:1px solid var(--border);}
+.mem-card-front{background:var(--card);background-image:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(255,255,255,0.015) 4px,rgba(255,255,255,0.015) 5px);font-size:1.3rem;color:var(--muted);}
+.mem-card-back{background:var(--surface);border-color:var(--accent);transform:rotateY(180deg);flex-direction:column;gap:0.15rem;}
+.mem-card.matched .mem-card-back{border-color:var(--success);background:rgba(122,201,160,0.08);}
+.mc-print{font-family:'Heebo',sans-serif;font-size:1.9rem;font-weight:700;color:var(--accent2);}
+.mc-name{font-size:0.6rem;color:var(--text);}
+.mem-card.matched .mc-print{color:var(--success);}
+
+/* MATCH */
+.word-bank{background:#1a1a2a;border:2px solid #3a3a5a;border-radius:16px;padding:1rem 1.2rem;margin-bottom:1.4rem;min-height:65px;}
+.word-bank-label{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:#6a6a9a;margin-bottom:0.55rem;}
+.word-bank-chips{display:flex;flex-wrap:wrap;gap:0.5rem;min-height:38px;}
+.chip{padding:0.25rem 0.4rem;border-radius:10px;cursor:pointer;border:3px solid transparent;transition:transform 0.15s,box-shadow 0.15s,opacity 0.2s;user-select:none;display:flex;align-items:center;justify-content:center;}
+.chip:hover:not(.used){transform:translateY(-3px) scale(1.05);box-shadow:0 6px 16px rgba(0,0,0,0.4);}
+.chip.selected{transform:translateY(-3px) scale(1.08);box-shadow:0 8px 20px rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.8);}
+.chip.used{opacity:0.15;pointer-events:none;}
+.cc0{background:#f0a030;}.cc1{background:#e8e050;}.cc2{background:#50d878;}.cc3{background:#50c8f0;}
+.cc4{background:#e850a0;}.cc5{background:#b878f0;}.cc6{background:#f06858;}.cc7{background:#40d8c0;}
+.cc8{background:#98d848;}.cc9{background:#f0c080;}.cc10{background:#78b8f0;}.cc11{background:#f09050;}
+.answer-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem 2rem;}
+@media(max-width:560px){.answer-grid{grid-template-columns:1fr;}}
+.answer-row{display:flex;align-items:center;gap:0.6rem;}
+.answer-slot{background:#fff;border:2px solid #ccc;border-radius:10px;width:52px;min-width:52px;height:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:border-color 0.2s,background 0.2s;overflow:hidden;flex-shrink:0;}
+.answer-slot:hover:not(.filled):not(.correct):not(.wrong){border-color:#888;background:#f5f5f5;}
+.answer-slot.filled{border-color:#aaa;}
+.answer-slot.correct{background:#d4f5e2;border-color:#4caf84;pointer-events:none;}
+.answer-slot.wrong{background:#ffe0e0;border-color:#d05060;animation:shake 0.35s;}
+.answer-label{font-family:'Heebo',sans-serif;font-size:2rem;font-weight:700;color:var(--accent2);flex:1;text-align:center;}
+.match-progress{background:var(--card);border:1px solid var(--border);border-radius:100px;height:6px;margin-bottom:1.2rem;overflow:hidden;}
+.match-progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--success));border-radius:100px;transition:width 0.4s;width:0%;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.submit-row{margin-top:1.4rem;display:flex;justify-content:center;}
+.submit-btn{background:var(--surface);border:2px solid var(--border);color:var(--text);padding:0.75rem 2.8rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:1rem;font-weight:700;transition:all 0.2s;}
+.submit-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* QUIZ */
+.quiz-wrap{max-width:500px;margin:0 auto;text-align:center;}
+.quiz-card{background:var(--card);border:2px solid var(--accent);border-radius:20px;padding:2rem 1.5rem;margin-bottom:1.3rem;}
+.quiz-prompt{font-size:0.78rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;}
+.quiz-big-print{font-family:'Heebo',sans-serif;font-weight:700;font-size:6rem;color:var(--accent2);line-height:1;}
+.quiz-feedback{margin-top:0.8rem;font-size:1.1rem;min-height:1.5rem;}
+.quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;}
+.quiz-choices .btn{width:100%;margin:0;font-size:0.88rem;text-transform:none;padding:0.5rem;}
+.qm-bar{display:flex;gap:0.55rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.2rem;}
+.qm-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.38rem 0.9rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:0.76rem;letter-spacing:0.04em;text-transform:uppercase;transition:all 0.2s;}
+.qm-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
+
+/* SNAKE */
+#snakeStatus{font-size:1rem;color:var(--muted);margin-bottom:0.5rem;text-align:center;}
+#snakeCanvas{display:block;margin:0 auto;border:2px solid var(--accent);border-radius:12px;background:#0a0a14;max-width:100%;}
+.snake-hint{text-align:center;margin-top:0.6rem;font-size:0.78rem;color:var(--muted);}
+
+/* TOAST & WIN */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--accent2);color:#0d0d0d;padding:0.65rem 1.8rem;border-radius:100px;font-weight:700;font-size:0.88rem;transition:transform 0.3s;z-index:100;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast.success-toast{background:var(--success);}
+.win-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:50;align-items:center;justify-content:center;}
+.win-overlay.show{display:flex;}
+.win-box{background:var(--card);border:1px solid var(--accent);border-radius:20px;padding:2.5rem;text-align:center;max-width:380px;}
+.win-box h2{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--accent);margin-bottom:0.5rem;}
+.win-box p{color:var(--muted);margin-bottom:1.4rem;}
+</style>
+</head>
+<body>
+<header>
+  <h1>האלף-בית העברי</h1>
+  <p>Hebrew Alphabet — <span style="color:var(--accent2);font-weight:700;">Print מודפס</span> &nbsp;vs&nbsp; <span style="color:var(--accent);font-weight:700;">Handwriting כתב יד</span></p>
+  <div class="divider"></div>
+</header>
+<div class="tabs">
+  <button class="tab active" onclick="showTab('letters',this)">א האלף-בית</button>
+  <button class="tab" onclick="showTab('quiz',this)">🎯 חידון</button>
+  <button class="tab" onclick="showTab('memory',this)">🃏 זיכרון</button>
+  <button class="tab" onclick="showTab('match',this)">🔗 התאמה</button>
+  <button class="tab" onclick="showTab('snake',this)">🐍 נחש</button>
+</div>
+<section id="letters" class="active"><div class="letter-grid" id="letterGrid"></div></section>
+<section id="quiz">
+  <div class="qm-bar">
+    <button class="qm-btn active" id="qmA" onclick="setQM('print')">See Print → Name It</button>
+    <button class="qm-btn" id="qmB" onclick="setQM('hand')">See Handwriting → Choose Print</button>
+    <button class="qm-btn" id="qmC" onclick="setQM('sound')">See Letter → Sound</button>
+  </div>
+  <div class="quiz-wrap">
+    <div class="quiz-card">
+      <div class="quiz-prompt" id="qPrompt"></div>
+      <div id="qDisplay"></div>
+      <div class="quiz-feedback" id="qFeedback"></div>
+    </div>
+    <div class="quiz-choices" id="qChoices"></div>
+    <div style="margin-top:0.9rem;font-size:0.85rem;color:var(--muted);">
+      Score: <span id="qScore" style="color:var(--accent);font-weight:700;">0</span> / <span id="qTotal">0</span>
+      &nbsp;|&nbsp; <span id="qLeft">0</span> remaining
+    </div>
+  </div>
+</section>
+<section id="memory">
+  <div class="game-controls">
+    <button class="btn" onclick="initMemory()">↺ New Game</button>
+    <div class="score-badge">Matches: <span id="memScore">0</span>/<span id="memTotal">0</span> &nbsp;|&nbsp; Moves: <span id="memMoves">0</span></div>
+  </div>
+  <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">
+    Match each <span style="color:var(--accent2);font-weight:700;">print letter</span> with its <span style="color:var(--accent);font-weight:700;">handwritten</span> form.
+  </p>
+  <div class="memory-grid" id="memoryGrid"></div>
+</section>
+<section id="match">
+  <div class="game-controls">
+    <button class="btn" onclick="initMatch()">↺ New Game</button>
+    <div class="score-badge">Correct: <span id="matchScore">0</span>/<span id="matchTotal">0</span></div>
+  </div>
+  <div class="match-progress"><div class="match-progress-bar" id="matchBar"></div></div>
+  <div class="word-bank">
+    <div class="word-bank-label">Click a handwritten letter → then click the matching print box below</div>
+    <div class="word-bank-chips" id="wordBankChips"></div>
+  </div>
+  <div class="answer-grid" id="answerGrid"></div>
+  <div class="submit-row"><button class="submit-btn" onclick="submitAnswers()">Submit Answers ✓</button></div>
+</section>
+<section id="snake">
+  <div class="game-controls">
+    <button class="btn" onclick="startSnake()">↺ New Game</button>
+    <div class="score-badge">Score: <span id="snakeScore">0</span> &nbsp;|&nbsp; Speed: <span id="snakeSpeed">1</span></div>
+  </div>
+  <div id="snakeStatus">🐍 Snake head = print letter. Eat its handwritten form to grow!</div>
+  <canvas id="snakeCanvas" width="600" height="440"></canvas>
+  <div class="snake-hint">↑ ↓ ← → or WASD · Touch: swipe</div>
+</section>
+<div class="toast" id="toast"></div>
+<div class="win-overlay" id="winOverlay">
+  <div class="win-box">
+    <h2 id="winTitle">🎉 מצוין!</h2><p id="winMessage"></p>
+    <button class="btn success" id="winBtn">Play Again</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// CANVAS DRAW FUNCTIONS — one per Hebrew letter
+// drawLetter(ctx, color, x, y, w, h)
+// All paths designed in 0-60 × 0-70 coordinate space,
+// then scaled to actual canvas size via transform.
+// ═══════════════════════════════════════════════════════════
+const DRAW = {
+  'א': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    stroke(c,[[30,14],[18,38]]);
+    c.lineWidth=3.0; stroke(c,[[18,38],[12,54]]);
+    c.lineWidth=3.5; stroke(c,[[30,14],[44,32]]);
+    c.lineWidth=3.0; stroke(c,[[20,24],[40,46]]);
+  },
+  'ב': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath(); c.moveTo(44,14);
+    c.quadraticCurveTo(16,12,14,30);
+    c.quadraticCurveTo(12,52,44,56); c.stroke();
+  },
+  'ג': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath(); c.moveTo(30,12); c.lineTo(30,48);
+    c.quadraticCurveTo(30,58,42,56); c.stroke();
+  },
+  'ד': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath(); c.moveTo(40,10);
+    c.quadraticCurveTo(46,16,36,34);
+    c.quadraticCurveTo(26,52,16,60); c.stroke();
+  },
+  'ה': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath();
+    c.moveTo(40,56); c.lineTo(40,28);
+    c.quadraticCurveTo(40,12,28,12);
+    c.quadraticCurveTo(16,12,16,24);
+    c.quadraticCurveTo(16,36,28,36); c.lineTo(40,36);
+    c.stroke();
+  },
+  'ו': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath(); c.moveTo(30,10);
+    c.quadraticCurveTo(35,10,35,18); c.lineTo(35,56); c.stroke();
+  },
+  'ז': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath(); c.moveTo(18,14); c.lineTo(42,14);
+    c.quadraticCurveTo(44,30,28,56); c.stroke();
+  },
+  'ח': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath();
+    c.moveTo(14,56); c.lineTo(14,22);
+    c.quadraticCurveTo(14,10,30,10);
+    c.quadraticCurveTo(46,10,46,22); c.lineTo(46,56);
+    c.stroke();
+  },
+  'ט': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath();
+    c.moveTo(14,24); c.lineTo(14,46);
+    c.quadraticCurveTo(14,58,30,58);
+    c.quadraticCurveTo(46,58,46,46); c.lineTo(46,12);
+    c.stroke();
+  },
+  'י': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath(); c.moveTo(34,18);
+    c.quadraticCurveTo(40,14,37,26);
+    c.quadraticCurveTo(34,36,30,44); c.stroke();
+  },
+  'כ': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(44,16);
+    c.quadraticCurveTo(14,16,14,35);
+    c.quadraticCurveTo(14,56,44,56);
+    c.stroke();
+  },
+  'ך': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(42,14);
+    c.quadraticCurveTo(14,14,14,32);
+    c.quadraticCurveTo(14,46,42,46);
+    c.lineTo(42,66);
+    c.stroke();
+  },
+  'ל': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath(); c.moveTo(34,58); c.lineTo(34,14);
+    c.quadraticCurveTo(34,4,22,6); c.stroke();
+  },
+  'מ': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath();
+    c.moveTo(14,56); c.lineTo(14,28);
+    c.quadraticCurveTo(14,12,30,12);
+    c.quadraticCurveTo(46,12,46,28); c.lineTo(46,56);
+    c.stroke();
+    c.lineWidth=2.5;
+    c.beginPath(); c.moveTo(46,22);
+    c.quadraticCurveTo(54,18,52,8); c.stroke();
+  },
+  'ם': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath(); c.moveTo(14,14); c.lineTo(46,14);
+    c.lineTo(46,54); c.lineTo(14,54); c.closePath(); c.stroke();
+  },
+  'נ': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath();
+    c.moveTo(40,14);
+    c.quadraticCurveTo(44,14,44,26);
+    c.lineTo(44,44);
+    c.quadraticCurveTo(44,56,30,56); c.lineTo(14,56);
+    c.stroke();
+  },
+  'ן': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath(); c.moveTo(30,14); c.lineTo(30,66); c.stroke();
+  },
+  'ס': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(30,12);
+    c.quadraticCurveTo(50,12,50,34);
+    c.quadraticCurveTo(50,56,30,56);
+    c.quadraticCurveTo(10,56,10,34);
+    c.quadraticCurveTo(10,12,30,12);
+    c.closePath(); c.stroke();
+  },
+  'ע': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath(); c.moveTo(30,14);
+    c.quadraticCurveTo(28,36,18,50);
+    c.quadraticCurveTo(12,58,10,66); c.stroke();
+    c.beginPath(); c.moveTo(30,14);
+    c.quadraticCurveTo(32,36,42,50);
+    c.quadraticCurveTo(48,58,50,66); c.stroke();
+  },
+  'פ': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(46,34);
+    c.quadraticCurveTo(46,10,26,10);
+    c.quadraticCurveTo(10,10,10,30);
+    c.quadraticCurveTo(10,50,26,50);
+    c.quadraticCurveTo(38,50,38,38);
+    c.quadraticCurveTo(38,28,28,28);
+    c.stroke();
+  },
+  'ף': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(46,28);
+    c.quadraticCurveTo(46,6,26,6);
+    c.quadraticCurveTo(10,6,10,24);
+    c.quadraticCurveTo(10,42,26,42);
+    c.quadraticCurveTo(38,42,38,32);
+    c.quadraticCurveTo(38,24,28,24);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(10,42); c.lineTo(10,66);
+    c.stroke();
+  },
+  'צ': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(16,10);
+    c.quadraticCurveTo(46,10,46,22);
+    c.quadraticCurveTo(46,34,16,34);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(16,34);
+    c.quadraticCurveTo(46,34,46,46);
+    c.quadraticCurveTo(46,58,16,58);
+    c.stroke();
+  },
+  'ץ': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(16,8);
+    c.quadraticCurveTo(44,8,44,20);
+    c.quadraticCurveTo(44,32,16,32);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(16,32);
+    c.quadraticCurveTo(44,32,44,44);
+    c.lineTo(44,66);
+    c.stroke();
+  },
+  'ק': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath();
+    c.moveTo(38,14);
+    c.quadraticCurveTo(12,10,12,32);
+    c.quadraticCurveTo(12,48,28,48);
+    c.stroke();
+    c.beginPath(); c.moveTo(38,14); c.lineTo(38,62);
+    c.stroke();
+  },
+  'ר': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
+    c.beginPath();
+    c.moveTo(18,14); c.quadraticCurveTo(46,10,46,30);
+    c.lineTo(46,56); c.stroke();
+  },
+  'ש': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    // Three prongs connected by curved base
+    stroke(c,[[8,18],[8,48]]);
+    stroke(c,[[28,10],[28,48]]);
+    stroke(c,[[48,18],[48,48]]);
+    c.beginPath();
+    c.moveTo(8,48);
+    c.quadraticCurveTo(18,58,28,48);
+    c.quadraticCurveTo(38,58,48,48);
+    c.stroke();
+  },
+  'ת': (c,col)=>{
+    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
+    c.beginPath();
+    c.moveTo(8,62); c.quadraticCurveTo(14,54,14,46);
+    c.lineTo(14,22);
+    c.quadraticCurveTo(14,10,30,10);
+    c.quadraticCurveTo(46,10,46,22); c.lineTo(46,56);
+    c.stroke();
+  },
+};
+
+function stroke(ctx, pts) {
+  ctx.beginPath();
+  ctx.moveTo(pts[0][0], pts[0][1]);
+  for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1]);
+  ctx.stroke();
+}
+
+// Draw a letter onto a canvas, scaling from 60×70 design space to actual canvas size
+function drawLetterOnCanvas(canvas, letter, color) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const fn = DRAW[letter];
+  if(!fn) return;
+  ctx.save();
+  // Scale from design space (60×70) to canvas size, with small padding
+  const pad = 4;
+  const scaleX = (W - pad*2) / 60;
+  const scaleY = (H - pad*2) / 70;
+  const scale = Math.min(scaleX, scaleY);
+  const offX = (W - 60*scale) / 2;
+  const offY = (H - 70*scale) / 2;
+  ctx.translate(offX, offY);
+  ctx.scale(scale, scale);
+  ctx.globalAlpha = 1.0;
+  fn(ctx, color);
+  ctx.restore();
+}
+
+// Create a canvas element with a drawn letter
+function makeLetterCanvas(letter, color, w, h) {
+  const cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  cv.style.display = 'block';
+  drawLetterOnCanvas(cv, letter, color);
+  return cv;
+}
+
+// Hebrew cursive font for handwriting display
+const HAND_FONT = "'Guttman Yad', 'Guttman Kav', 'Guttman Yad-Brush', 'Guttman Yad Light', cursive";
+function makeLetterEl(letter, color, fontSize) {
+  const el = document.createElement('span');
+  el.textContent = letter;
+  el.style.fontFamily = HAND_FONT;
+  el.style.fontSize = fontSize || '2.4rem';
+  el.style.color = color;
+  el.style.display = 'block';
+  el.style.lineHeight = '1.2';
+  el.style.textAlign = 'center';
+  el.style.direction = 'rtl';
+  el.style.fontWeight = '400';
+  return el;
+}
+
+// ── DATA ─────────────────────────────────────────────────
+const AB = [
+  {p:'א',name:'Alef',     sound:'silent / ʔ', num:1},
+  {p:'ב',name:'Bet/Vet',  sound:'b / v',      num:2},
+  {p:'ג',name:'Gimel',    sound:'g',           num:3},
+  {p:'ד',name:'Dalet',    sound:'d',           num:4},
+  {p:'ה',name:'He',       sound:'h',           num:5},
+  {p:'ו',name:'Vav',      sound:'v / o / u',  num:6},
+  {p:'ז',name:'Zayin',    sound:'z',           num:7},
+  {p:'ח',name:'Het',      sound:'ch (guttural)',num:8},
+  {p:'ט',name:'Tet',      sound:'t',           num:9},
+  {p:'י',name:'Yod',      sound:'y / i',      num:10},
+  {p:'כ',name:'Kaf/Khaf', sound:'k / kh',     num:20},
+  {p:'ך',name:'Final Kaf',sound:'kh',          num:20},
+  {p:'ל',name:'Lamed',    sound:'l',           num:30},
+  {p:'מ',name:'Mem',      sound:'m',           num:40},
+  {p:'ם',name:'Final Mem',sound:'m',           num:40},
+  {p:'נ',name:'Nun',      sound:'n',           num:50},
+  {p:'ן',name:'Final Nun',sound:'n',           num:50},
+  {p:'ס',name:'Samekh',   sound:'s',           num:60},
+  {p:'ע',name:'Ayin',     sound:'silent / ʕ', num:70},
+  {p:'פ',name:'Pe/Fe',    sound:'p / f',      num:80},
+  {p:'ף',name:'Final Pe', sound:'f',           num:80},
+  {p:'צ',name:'Tsadi',    sound:'ts',          num:90},
+  {p:'ץ',name:'Final Tsadi',sound:'ts',        num:90},
+  {p:'ק',name:'Kuf',      sound:'k',           num:100},
+  {p:'ר',name:'Resh',     sound:'r',           num:200},
+  {p:'ש',name:'Shin/Sin', sound:'sh / s',     num:300},
+  {p:'ת',name:'Tav',      sound:'t',           num:400},
+];
+
+const CC=['cc0','cc1','cc2','cc3','cc4','cc5','cc6','cc7','cc8','cc9','cc10','cc11'];
+// Darker colors matching chip backgrounds for chip canvases
+const CC_COL={
+  cc0:'#7a3800',cc1:'#6a6000',cc2:'#006a20',cc3:'#004060',
+  cc4:'#700040',cc5:'#400080',cc6:'#700010',cc7:'#006050',
+  cc8:'#306000',cc9:'#704000',cc10:'#004060',cc11:'#702000'
+};
+
+// ── LETTER GRID ──────────────────────────────────────────
+function buildLetterGrid() {
+  const g = document.getElementById('letterGrid');
+  g.innerHTML = '';
+  AB.forEach(l => {
+    const card = document.createElement('div');
+    card.className = 'letter-card';
+
+    const row = document.createElement('div');
+    row.className = 'lc-row';
+
+    // Print side
+    const printHalf = document.createElement('div');
+    printHalf.className = 'lc-half';
+    printHalf.innerHTML = `<div class="lc-label">Print מודפס</div><div class="lc-print">${l.p}</div>`;
+
+    // Hand side
+    const handHalf = document.createElement('div');
+    handHalf.className = 'lc-half';
+    const lbl = document.createElement('div');
+    lbl.className = 'lc-label';
+    lbl.textContent = 'Hand כתב יד';
+    const cv = makeLetterEl(l.p, '#b878f0', '2.4rem');
+    handHalf.appendChild(lbl);
+    handHalf.appendChild(cv);
+
+    row.appendChild(printHalf);
+    row.appendChild(handHalf);
+
+    const name = document.createElement('div'); name.className='lc-name'; name.textContent=l.name;
+
+    card.appendChild(row);
+    card.appendChild(name);
+    g.appendChild(card);
+  });
+}
+
+// ── QUIZ ─────────────────────────────────────────────────
+let qMode='print', qLetters=[], qIdx=0, qScore=0;
+
+function setQM(mode) {
+  qMode=mode;
+  ['A','B','C'].forEach((x,i)=>document.getElementById('qm'+x).classList.toggle('active',['print','hand','sound'][i]===mode));
+  startQuiz();
+}
+
+function startQuiz() {
+  qLetters=[...AB].sort(()=>Math.random()-0.5);
+  qIdx=0; qScore=0;
+  document.getElementById('qScore').textContent=0;
+  document.getElementById('qTotal').textContent=qLetters.length;
+  nextQ();
+}
+
+function nextQ() {
+  if (qIdx >= qLetters.length) {
+    const d = document.getElementById('qDisplay');
+    d.innerHTML = '<div style="font-size:3rem">🎉</div>';
+    document.getElementById('qPrompt').textContent = 'All done!';
+    document.getElementById('qFeedback').innerHTML = `<span style="color:var(--success)">Score: ${qScore}/${qLetters.length}</span>`;
+    document.getElementById('qChoices').innerHTML = `<button class="btn success" onclick="startQuiz()" style="grid-column:1/-1;margin:0">Play Again ↺</button>`;
+    document.getElementById('qLeft').textContent = 0;
+    return;
+  }
+  const cur = qLetters[qIdx];
+  document.getElementById('qFeedback').textContent = '';
+  document.getElementById('qLeft').textContent = qLetters.length - qIdx;
+  document.getElementById('qChoices').innerHTML = '';
+  const disp = document.getElementById('qDisplay');
+  disp.innerHTML = '';
+
+  if (qMode === 'print') {
+    document.getElementById('qPrompt').textContent = 'What is the name of this letter?';
+    disp.innerHTML = `<div class="quiz-big-print">${cur.p}</div>`;
+    const pool = AB.filter(l=>l.name!==cur.name).sort(()=>Math.random()-0.5).slice(0,3);
+    makeQChoices([...pool.map(l=>l.name),cur.name].sort(()=>Math.random()-0.5), cur.name, 'text');
+  } else if (qMode === 'hand') {
+    document.getElementById('qPrompt').textContent = 'This is handwritten — choose the matching print letter.';
+    const cv = makeLetterEl(cur.p, '#b878f0', '5rem');
+    cv.style.margin = '0 auto';
+    disp.appendChild(cv);
+    const pool = AB.filter(l=>l.p!==cur.p).sort(()=>Math.random()-0.5).slice(0,3);
+    makeQChoices([...pool.map(l=>l.p),cur.p].sort(()=>Math.random()-0.5), cur.p, 'print');
+  } else {
+    document.getElementById('qPrompt').textContent = 'What sound does this letter make?';
+    disp.innerHTML = `<div class="quiz-big-print">${cur.p}</div>`;
+    const pool = AB.filter(l=>l.sound!==cur.sound).sort(()=>Math.random()-0.5).slice(0,3);
+    makeQChoices([...pool.map(l=>l.sound),cur.sound].sort(()=>Math.random()-0.5), cur.sound, 'text');
+  }
+}
+
+function makeQChoices(opts, correct, type) {
+  const ch = document.getElementById('qChoices');
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    if (type === 'print') { btn.style.cssText = 'font-size:2rem;color:var(--accent2);font-weight:700;'; }
+    btn.textContent = opt; btn.style.width='100%'; btn.style.margin='0';
+    btn.onclick = () => checkQ(opt, correct, btn);
+    ch.appendChild(btn);
+  });
+}
+
+function checkQ(chosen, correct, btn) {
+  document.querySelectorAll('#qChoices .btn').forEach(b=>b.disabled=true);
+  if (chosen === correct) {
+    btn.style.background='var(--success)'; btn.style.color='#0d0d0d'; btn.style.borderColor='var(--success)';
+    document.getElementById('qFeedback').innerHTML = '<span style="color:var(--success)">✓ Correct!</span>';
+    qScore++; document.getElementById('qScore').textContent = qScore;
+  } else {
+    btn.style.background='#c97a8a'; btn.style.color='#fff'; btn.style.borderColor='#c97a8a';
+    document.getElementById('qFeedback').innerHTML = `<span style="color:#c97a8a">✗ Answer: ${correct}</span>`;
+    document.querySelectorAll('#qChoices .btn').forEach(b=>{if(b.textContent===correct){b.style.background='var(--success)';b.style.color='#0d0d0d';b.style.borderColor='var(--success)';}});
+  }
+  qIdx++; setTimeout(nextQ, 1200);
+}
+
+// ── MEMORY ───────────────────────────────────────────────
+let mFlipped=[], mMatched=0, mMoves=0, mLocked=false, mSet=[];
+
+function initMemory() {
+  mSet = [...AB].sort(()=>Math.random()-0.5);
+  mFlipped=[]; mMatched=0; mMoves=0; mLocked=false;
+  document.getElementById('memScore').textContent=0;
+  document.getElementById('memMoves').textContent=0;
+  document.getElementById('memTotal').textContent=mSet.length;
+  const cards = [];
+  mSet.forEach((l,i)=>{cards.push({id:i,type:'print',l});cards.push({id:i,type:'hand',l});});
+  for(let i=cards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cards[i],cards[j]]=[cards[j],cards[i]];}
+  const grid = document.getElementById('memoryGrid');
+  grid.innerHTML = '';
+  cards.forEach(c => {
+    const el = document.createElement('div');
+    el.className='mem-card'; el.dataset.id=c.id; el.dataset.type=c.type;
+    const back = document.createElement('div'); back.className='mem-card-back';
+    if (c.type==='print') {
+      back.innerHTML = `<div class="mc-print">${c.l.p}</div><div class="mc-name">${c.l.name}</div>`;
+    } else {
+      const cv = makeLetterEl(c.l.p, '#b878f0', '1.8rem');
+      back.appendChild(cv);
+      const nm = document.createElement('div'); nm.className='mc-name'; nm.textContent=c.l.name;
+      back.appendChild(nm);
+    }
+    const front = document.createElement('div'); front.className='mem-card-front'; front.textContent='✦';
+    const inner = document.createElement('div'); inner.className='mem-card-inner';
+    inner.appendChild(front); inner.appendChild(back);
+    el.appendChild(inner);
+    el.onclick = () => flipMem(el);
+    grid.appendChild(el);
+  });
+}
+
+function flipMem(el) {
+  if(mLocked||el.classList.contains('flipped')||el.classList.contains('matched'))return;
+  el.classList.add('flipped'); mFlipped.push(el);
+  if(mFlipped.length===2){
+    mLocked=true; mMoves++;
+    document.getElementById('memMoves').textContent=mMoves;
+    const[a,b]=mFlipped;
+    if(a.dataset.id===b.dataset.id&&a.dataset.type!==b.dataset.type){
+      a.classList.add('matched'); b.classList.add('matched');
+      mMatched++; document.getElementById('memScore').textContent=mMatched;
+      mFlipped=[]; mLocked=false;
+      if(mMatched===mSet.length)setTimeout(()=>showWin('memory'),400);
+    } else {
+      setTimeout(()=>{a.classList.remove('flipped');b.classList.remove('flipped');mFlipped=[];mLocked=false;},900);
+    }
+  }
+}
+
+// ── MATCH-UP ─────────────────────────────────────────────
+let selChip=null, ccMap={}, mxSet=[];
+
+function initMatch() {
+  mxSet = [...AB].sort(()=>Math.random()-0.5);
+  selChip=null; ccMap={};
+  document.getElementById('matchScore').textContent=0;
+  document.getElementById('matchTotal').textContent=mxSet.length;
+  document.getElementById('matchBar').style.width='0%';
+  const sh = [...mxSet].sort(()=>Math.random()-0.5);
+  sh.forEach((l,i)=>{ ccMap[l.name]=CC[i%CC.length]; });
+  const bank = document.getElementById('wordBankChips');
+  bank.innerHTML = '';
+  sh.forEach(l => {
+    const chip = document.createElement('div');
+    chip.className = `chip ${ccMap[l.name]}`;
+    chip.dataset.name=l.name; chip.id='chip__'+l.name;
+    const cv = makeLetterEl(l.p, CC_COL[ccMap[l.name]]||'#333', '1.6rem');
+    chip.appendChild(cv);
+    chip.onclick = () => selChipFn(chip, l.name);
+    bank.appendChild(chip);
+  });
+  const rows = [...mxSet].sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('answerGrid');
+  grid.innerHTML = '';
+  rows.forEach(l => {
+    const row = document.createElement('div'); row.className='answer-row';
+    const slot = document.createElement('div'); slot.className='answer-slot';
+    slot.dataset.correct=l.name; slot.onclick=()=>placeChip(slot);
+    const label = document.createElement('div'); label.className='answer-label'; label.textContent=l.p;
+    row.appendChild(slot); row.appendChild(label); grid.appendChild(row);
+  });
+}
+
+function selChipFn(el, name) {
+  document.querySelectorAll('.chip.selected').forEach(c=>c.classList.remove('selected'));
+  if(selChip&&selChip.name===name){selChip=null;return;}
+  el.classList.add('selected'); selChip={el,name,cc:ccMap[name]};
+}
+
+function placeChip(slotEl) {
+  if(!selChip||slotEl.classList.contains('correct'))return;
+  const{el:chipEl,name,cc}=selChip;
+  if(slotEl.dataset.placed){const p=document.getElementById('chip__'+slotEl.dataset.placed);if(p)p.classList.remove('used');}
+  chipEl.classList.add('used'); chipEl.classList.remove('selected');
+  slotEl.dataset.placed=name; slotEl.classList.add('filled'); slotEl.classList.remove('wrong');
+  // Put canvas in slot
+  slotEl.innerHTML='';
+  const l = AB.find(x=>x.name===name);
+  const cv = makeLetterEl(l.p, CC_COL[cc]||'#333', '1.8rem');
+  slotEl.appendChild(cv);
+  slotEl.style.background='#2a2a3a';
+  selChip=null;
+}
+
+function submitAnswers() {
+  const slots = document.querySelectorAll('.answer-slot');
+  let unfilled=false, correct=0;
+  slots.forEach(s=>{
+    if(s.classList.contains('correct')){correct++;return;}
+    if(!s.dataset.placed){unfilled=true;return;}
+    if(s.dataset.placed===s.dataset.correct){s.classList.add('correct');s.classList.remove('filled','wrong');correct++;}
+    else{
+      s.classList.add('wrong');
+      const p=document.getElementById('chip__'+s.dataset.placed);if(p)p.classList.remove('used');
+      s.innerHTML=''; s.classList.remove('filled'); s.style.background=''; delete s.dataset.placed;
+    }
+  });
+  if(unfilled){showToast('Fill in all boxes first!');return;}
+  document.getElementById('matchScore').textContent=correct;
+  document.getElementById('matchBar').style.width=(correct/mxSet.length*100)+'%';
+  if(correct===mxSet.length)setTimeout(()=>showWin('match'),400);
+  else showToast(`${correct}/${mxSet.length} correct — keep going!`);
+}
+
+// ── SNAKE ────────────────────────────────────────────────
+let snkInterval=null, snkDir={x:1,y:0}, snkNxt={x:1,y:0};
+let snkBody=[], snkPrint='', snkTarget=null, snkFoods=[], snkScore=0, snkLvl=1;
+const SZ=40;
+
+function startSnake() {
+  stopSnake();
+  const cv=document.getElementById('snakeCanvas');
+  const cols=Math.floor(cv.width/SZ), rows=Math.floor(cv.height/SZ);
+  snkDir={x:1,y:0}; snkNxt={x:1,y:0}; snkScore=0; snkLvl=1;
+  document.getElementById('snakeScore').textContent=0;
+  document.getElementById('snakeSpeed').textContent=1;
+  snkBody=[{x:3,y:Math.floor(rows/2)},{x:2,y:Math.floor(rows/2)},{x:1,y:Math.floor(rows/2)}];
+  spawnFood(cols,rows);
+  snkInterval=setInterval(()=>snkTick(cols,rows),200);
+}
+
+function stopSnake(){if(snkInterval){clearInterval(snkInterval);snkInterval=null;}}
+
+function spawnFood(cols,rows) {
+  snkFoods=[];
+  snkTarget = AB[Math.floor(Math.random()*AB.length)];
+  snkPrint = snkTarget.p;
+  document.getElementById('snakeStatus').textContent=`🐍 Find the handwritten form of: ${snkTarget.p} (${snkTarget.name})`;
+  const dec = AB.filter(l=>l.name!==snkTarget.name).sort(()=>Math.random()-0.5).slice(0,4);
+  [{l:snkTarget,ok:true},...dec.map(d=>({l:d,ok:false}))].sort(()=>Math.random()-0.5).forEach(f=>{
+    let pos;
+    do{pos={x:Math.floor(Math.random()*(cols-2))+1,y:Math.floor(Math.random()*(rows-2))+1};}
+    while(snkBody.some(s=>s.x===pos.x&&s.y===pos.y)||snkFoods.some(e=>e.x===pos.x&&e.y===pos.y));
+    snkFoods.push({...pos,p:f.l.p,name:f.l.name,ok:f.ok});
+  });
+}
+
+function snkTick(cols,rows) {
+  snkDir={...snkNxt};
+  const h={x:snkBody[0].x+snkDir.x,y:snkBody[0].y+snkDir.y};
+  if(h.x<0||h.x>=cols||h.y<0||h.y>=rows){snkDie();return;}
+  if(snkBody.some(s=>s.x===h.x&&s.y===h.y)){snkDie();return;}
+  snkBody.unshift(h);
+  const ei=snkFoods.findIndex(f=>f.x===h.x&&f.y===h.y);
+  if(ei>=0){
+    const f=snkFoods[ei];
+    if(f.ok){
+      snkScore++; snkLvl=Math.floor(snkScore/3)+1;
+      document.getElementById('snakeScore').textContent=snkScore;
+      document.getElementById('snakeSpeed').textContent=snkLvl;
+      clearInterval(snkInterval);
+      snkInterval=setInterval(()=>snkTick(cols,rows),Math.max(80,200-snkLvl*20));
+      spawnFood(cols,rows);
+    } else {
+      snkFoods.splice(ei,1);
+      if(snkBody.length>2)snkBody.pop();
+      snkBody.pop();
+      showToast('❌ Wrong! Look for: '+snkPrint);
+    }
+  } else {snkBody.pop();}
+  drawSnake(cols,rows);
+}
+
+function snkDie() {
+  stopSnake();
+  const cv=document.getElementById('snakeCanvas'),ctx=cv.getContext('2d');
+  ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.fillStyle='#b878f0'; ctx.font='bold 34px Heebo,serif'; ctx.textAlign='center';
+  ctx.fillText('💀 Game Over!',cv.width/2,cv.height/2-20);
+  ctx.fillStyle='#f0ede6'; ctx.font='20px Heebo,serif';
+  ctx.fillText('Score: '+snkScore,cv.width/2,cv.height/2+20);
+  ctx.fillStyle='#7a7570'; ctx.font='14px Heebo,serif';
+  ctx.fillText('Click New Game to play again',cv.width/2,cv.height/2+52);
+  document.getElementById('snakeStatus').textContent='💀 Game Over! Score: '+snkScore;
+}
+
+function drawSnake(cols,rows) {
+  const cv=document.getElementById('snakeCanvas'),ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  // grid
+  ctx.strokeStyle='rgba(255,255,255,0.03)'; ctx.lineWidth=0.5;
+  for(let x=0;x<cols;x++){ctx.beginPath();ctx.moveTo(x*SZ,0);ctx.lineTo(x*SZ,cv.height);ctx.stroke();}
+  for(let y=0;y<rows;y++){ctx.beginPath();ctx.moveTo(0,y*SZ);ctx.lineTo(cv.width,y*SZ);ctx.stroke();}
+  // foods — draw background box then letter using drawLetterOnCanvas on a temp canvas
+  snkFoods.forEach(f=>{
+    ctx.fillStyle=f.ok?'rgba(122,201,160,0.2)':'rgba(184,120,240,0.15)';
+    ctx.strokeStyle=f.ok?'#7ac9a0':'#b878f0'; ctx.lineWidth=2;
+    rr(ctx,f.x*SZ+2,f.y*SZ+2,SZ-4,SZ-4,8); ctx.fill(); ctx.stroke();
+    // draw letter using handwriting font
+    const col = f.ok ? '#7ac9a0' : '#c9a8f0';
+    ctx.fillStyle = col;
+    ctx.font = `${SZ*0.6}px "Guttman Yad", "Guttman Kav", cursive`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(f.p, f.x*SZ+SZ/2, f.y*SZ+SZ/2+2);
+  });
+  // body
+  for(let i=snkBody.length-1;i>=1;i--){
+    const s=snkBody[i],r=1-i/snkBody.length;
+    ctx.fillStyle=`rgba(${Math.round(60+r*60)},${Math.round(80+r*60)},${Math.round(140+r*80)},0.85)`;
+    rr(ctx,s.x*SZ+3,s.y*SZ+3,SZ-6,SZ-6,6); ctx.fill();
+  }
+  // head
+  const h=snkBody[0];
+  ctx.fillStyle='#e8c97a'; rr(ctx,h.x*SZ+1,h.y*SZ+1,SZ-2,SZ-2,10); ctx.fill();
+  ctx.strokeStyle='#0d0d0d'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.fillStyle='#0d0d0d';
+  ctx.font=`bold ${SZ*0.52}px Heebo,sans-serif`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(snkPrint, h.x*SZ+SZ/2, h.y*SZ+SZ/2+2);
+}
+
+function rr(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
+}
+
+document.addEventListener('keydown',e=>{
+  if(!snkInterval)return;
+  const m={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0},
+    w:{x:0,y:-1},s:{x:0,y:1},a:{x:-1,y:0},d:{x:1,y:0},
+    W:{x:0,y:-1},S:{x:0,y:1},A:{x:-1,y:0},D:{x:1,y:0}};
+  const nd=m[e.key];
+  if(nd&&!(nd.x===-snkDir.x&&nd.y===-snkDir.y)){snkNxt=nd;e.preventDefault();}
+});
+let _ts=null;
+document.addEventListener('touchstart',e=>{_ts=e.touches[0];},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!_ts||!snkInterval)return;
+  const dx=e.changedTouches[0].clientX-_ts.clientX,dy=e.changedTouches[0].clientY-_ts.clientY;
+  if(Math.abs(dx)>Math.abs(dy)){const nd=dx>0?{x:1,y:0}:{x:-1,y:0};if(!(nd.x===-snkDir.x))snkNxt=nd;}
+  else{const nd=dy>0?{x:0,y:1}:{x:0,y:-1};if(!(nd.y===-snkDir.y))snkNxt=nd;}
+  _ts=null;
+},{passive:true});
+
+// ── HELPERS ──────────────────────────────────────────────
+function showTab(name,el){
+  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(name).classList.add('active'); el.classList.add('active');
+  if(name==='memory')initMemory();
+  if(name==='match')initMatch();
+  if(name==='quiz')startQuiz();
+  if(name==='snake')startSnake();
+  if(name!=='snake')stopSnake();
+}
+
+let toastT;
+function showToast(msg,ok=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(ok?' success-toast':'');
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1900);
+}
+
+function showWin(game){
+  const ov=document.getElementById('winOverlay');
+  document.getElementById('winTitle').textContent=game==='memory'?'🎉 מצוין!':'🏆 מושלם!';
+  document.getElementById('winMessage').textContent=game==='memory'
+    ?`You matched all ${mSet.length} pairs in ${mMoves} moves!`
+    :`You matched all ${mxSet.length} letter pairs!`;
+  ov.classList.add('show');
+  document.getElementById('winBtn').onclick=()=>{ov.classList.remove('show');game==='memory'?initMemory():initMatch();};
+}
+
+buildLetterGrid();
+startQuiz();
+</script>
+</body>
+</html>
