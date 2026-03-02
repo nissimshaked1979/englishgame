@@ -266,48 +266,48 @@ function makeLetterEl(letter, color, fontSize) {
 // Letters that look DIFFERENT in handwriting vs print
 const AB_DIFFERENT = [
   {p:'א',name:'Alef',     sound:'silent / ʔ', num:1},
-  {p:'ב',name:'Bet/Vet',  sound:'b / v',      num:2},
+  {p:'ב',name:'Bet',      sound:'b / v',      num:2},
   {p:'ג',name:'Gimel',    sound:'g',           num:3},
   {p:'ד',name:'Dalet',    sound:'d',           num:4},
-  {p:'ז',name:'Zayin',    sound:'z',           num:7},
+  {p:'ז',name:'Zayeen',   sound:'z',           num:7},
   {p:'ט',name:'Tet',      sound:'t',           num:9},
   {p:'י',name:'Yod',      sound:'y / i',      num:10},
-  {p:'כ',name:'Kaf/Khaf', sound:'k / kh',     num:20},
-  {p:'ל',name:'Lamed',    sound:'l',           num:30},
-  {p:'מ',name:'Mem',      sound:'m',           num:40},
+  {p:'כ',name:'Kaf',      sound:'k / kh',     num:20},
+  {p:'ל',name:'Lah-med',  sound:'l',           num:30},
+  {p:'מ',name:'Memm',     sound:'m',           num:40},
   {p:'ע',name:'Ayin',     sound:'silent / ʕ', num:70},
-  {p:'צ',name:'Tsadi',    sound:'ts',          num:90},
-  {p:'ש',name:'Shin/Sin', sound:'sh / s',     num:300},
+  {p:'צ',name:'Tzah-dee',  sound:'ts',          num:90},
+  {p:'ש',name:'Shin',     sound:'sh / s',     num:300},
 ];
 
 // ALL Hebrew letters
 const AB_ALL = [
   {p:'א',name:'Alef',     sound:'silent / ʔ', num:1},
-  {p:'ב',name:'Bet/Vet',  sound:'b / v',      num:2},
+  {p:'ב',name:'Bet',  sound:'b / v',      num:2},
   {p:'ג',name:'Gimel',    sound:'g',           num:3},
   {p:'ד',name:'Dalet',    sound:'d',           num:4},
-  {p:'ה',name:'He',       sound:'h',           num:5},
+  {p:'ה',name:'Hey',       sound:'h',           num:5},
   {p:'ו',name:'Vav',      sound:'v / o / u',  num:6},
-  {p:'ז',name:'Zayin',    sound:'z',           num:7},
+  {p:'ז',name:'Zayeen',    sound:'z',           num:7},
   {p:'ח',name:'Het',      sound:'ch (guttural)',num:8},
   {p:'ט',name:'Tet',      sound:'t',           num:9},
   {p:'י',name:'Yod',      sound:'y / i',      num:10},
-  {p:'כ',name:'Kaf/Khaf', sound:'k / kh',     num:20},
-  {p:'ך',name:'Final Kaf',sound:'kh',          num:20},
-  {p:'ל',name:'Lamed',    sound:'l',           num:30},
-  {p:'מ',name:'Mem',      sound:'m',           num:40},
-  {p:'ם',name:'Final Mem',sound:'m',           num:40},
-  {p:'נ',name:'Nun',      sound:'n',           num:50},
-  {p:'ן',name:'Final Nun',sound:'n',           num:50},
-  {p:'ס',name:'Samekh',   sound:'s',           num:60},
+  {p:'כ',name:'Kaf', sound:'k / kh',     num:20},
+  {p:'ך',name:'Kaf Sofit',sound:'kh',          num:20},
+  {p:'ל',name:'Lah-med',    sound:'l',           num:30},
+  {p:'מ',name:'Memm',      sound:'m',           num:40},
+  {p:'ם',name:'Memm Sofit',sound:'m',           num:40},
+  {p:'נ',name:'Noon',      sound:'n',           num:50},
+  {p:'ן',name:'Noon Sofit',sound:'n',           num:50},
+  {p:'ס',name:'Sameh',   sound:'s',           num:60},
   {p:'ע',name:'Ayin',     sound:'silent / ʕ', num:70},
-  {p:'פ',name:'Pe/Fe',    sound:'p / f',      num:80},
-  {p:'ף',name:'Final Pe', sound:'f',           num:80},
-  {p:'צ',name:'Tsadi',    sound:'ts',          num:90},
-  {p:'ץ',name:'Final Tsadi',sound:'ts',        num:90},
-  {p:'ק',name:'Kuf',      sound:'k',           num:100},
+  {p:'פ',name:'Peh',    sound:'p / f',      num:80},
+  {p:'ף',name:'Peh Sofit', sound:'f',           num:80},
+  {p:'צ',name:'Tzah-dee',    sound:'ts',          num:90},
+  {p:'ץ',name:'Tzah-dee Sofit',sound:'ts',        num:90},
+  {p:'ק',name:'Koof',      sound:'k',           num:100},
   {p:'ר',name:'Resh',     sound:'r',           num:200},
-  {p:'ש',name:'Shin/Sin', sound:'sh / s',     num:300},
+  {p:'ש',name:'Shin',     sound:'sh / s',     num:300},
   {p:'ת',name:'Tav',      sound:'t',           num:400},
 ];
 
@@ -346,6 +346,16 @@ const CC_COL={
   cc8:'#306000',cc9:'#704000',cc10:'#004060',cc11:'#702000'
 };
 
+// ── SPEAK LETTER NAME ────────────────────────────────────
+function speakName(name) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(name);
+  u.lang = 'en-US';
+  u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
 // ── LETTER GRID ──────────────────────────────────────────
 function buildLetterGrid() {
   const g = document.getElementById('letterGrid');
@@ -379,6 +389,8 @@ function buildLetterGrid() {
 
     card.appendChild(row);
     card.appendChild(name);
+    card.style.cursor = 'pointer';
+    card.onclick = () => speakName(l.name);
     g.appendChild(card);
   });
 }
