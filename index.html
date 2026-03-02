@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0047)https://nissimshaked1979.github.io/englishgame/ -->
+<html lang="en" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>מילים / Words – Hebrew English Learning</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="./updae_page_files/css2" rel="stylesheet">
 <style>
   :root {
     --bg: #0d0d0d;
@@ -385,12 +385,49 @@
   <button class="tab active" onclick="showTab('words',this)">📖 רשימת מילים</button>
   <button class="tab" onclick="showTab('memory',this)">🃏 משחק זיכרון</button>
   <button class="tab" onclick="showTab('match',this)">🔗 התאמה</button>
+  <button class="tab" onclick="showTab('snake',this)">🐍 נחש</button>
   <button class="tab" onclick="showTab('edit',this)">✏️ ערוך מילים</button>
 </div>
 
 <!-- WORD LIST -->
 <section id="words" class="active">
-  <div class="word-grid" id="wordGrid"></div>
+  <div class="word-grid" id="wordGrid"><div class="word-card">
+      <span class="wc-hebrew">הרבה</span>
+      <div class="wc-english">a lot of</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">לנצח</span>
+      <div class="wc-english">win</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">שחמט</span>
+      <div class="wc-english">chess</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">ראשון</span>
+      <div class="wc-english">first</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">חשוב</span>
+      <div class="wc-english">important</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">זקן</span>
+      <div class="wc-english">old</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">אנשים</span>
+      <div class="wc-english">people</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">מיוחד</span>
+      <div class="wc-english">special</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">צעיר</span>
+      <div class="wc-english">young</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">ביחד</span>
+      <div class="wc-english">together</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">ללמוד</span>
+      <div class="wc-english">learn</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div><div class="word-card">
+      <span class="wc-hebrew">תשעים</span>
+      <div class="wc-english">ninety</div>
+      <div class="speak-hint">Click to hear pronunciation</div></div></div>
 </section>
 
 <!-- MEMORY GAME -->
@@ -422,10 +459,27 @@
   </div>
 </section>
 
+<!-- SNAKE GAME -->
+<section id="snake">
+  <div class="game-controls">
+    <button class="btn" onclick="startSnake()">↺ New Game</button>
+    <div class="score-badge">Score: <span id="snakeScore">0</span> &nbsp;|&nbsp; Speed: <span id="snakeSpeed">1</span></div>
+  </div>
+  <div style="text-align:center;margin-bottom:1rem;">
+    <div id="snakeStatus" style="font-family:'Heebo',sans-serif;font-size:1rem;color:var(--muted);margin-bottom:0.5rem;">
+      🐍 The snake head shows an English word. Eat the matching Hebrew word to grow!
+    </div>
+    <canvas id="snakeCanvas" width="600" height="440" style="border:2px solid var(--accent);border-radius:12px;background:#0a0a14;max-width:100%;"></canvas>
+    <div style="margin-top:0.8rem;font-family:'Heebo',sans-serif;font-size:0.8rem;color:var(--muted);">
+      ↑ ↓ ← →  or  WASD to move &nbsp;|&nbsp; Touch: swipe to steer
+    </div>
+  </div>
+</section>
+
 <!-- EDIT WORDS -->
 <section id="edit">
   <div class="game-controls">
-    <div style="font-family:'Heebo',sans-serif;font-size:0.8rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;">
+    <div style="font-family:&#39;Heebo&#39;,sans-serif;font-size:0.8rem;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;">
       מספר זוגות מילים: <span id="pairCount" style="color:var(--accent);font-weight:700;">12</span>
     </div>
     <button class="btn" onclick="addEditRow()" style="margin-left:auto;">+ הוסף זוג מילים</button>
@@ -452,6 +506,19 @@
 
   <div id="editList"></div>
 </section>
+
+<!-- CSV Import Modal -->
+<div id="csvModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:60;align-items:center;justify-content:center;">
+  <div style="background:var(--card);border:1px solid var(--accent);border-radius:20px;padding:2.5rem;max-width:420px;width:90%;text-align:center;">
+    <h3 style="font-family:'Playfair Display',serif;color:var(--accent);font-size:1.6rem;margin-bottom:0.5rem;">Import CSV</h3>
+    <p id="csvModalMsg" style="color:var(--muted);margin-bottom:1.5rem;font-size:0.95rem;"></p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <button class="btn success" onclick="resolveCSV(true)">➕ Add to existing words</button>
+      <button class="btn" style="border-color:var(--accent2);color:var(--accent2);" onclick="resolveCSV(false)">🔄 Replace all words</button>
+    </div>
+    <button onclick="cancelCSV()" style="background:none;border:none;color:var(--muted);cursor:pointer;margin-top:1.2rem;font-family:'Heebo',sans-serif;font-size:0.85rem;text-decoration:underline;">Cancel</button>
+  </div>
+</div>
 
 <div class="toast" id="toast"></div>
 
@@ -740,9 +807,14 @@ async function translateRow(btn) {
   }
 }
 
+// ── CSV IMPORT WITH MODAL ────────────────────────────────
+let _csvPending = null;
+let _csvFile = null;
+
 function importCSV(input) {
   const file = input.files[0];
   if (!file) return;
+  _csvFile = file;
   const reader = new FileReader();
   reader.onload = (e) => {
     const text = e.target.result;
@@ -750,21 +822,18 @@ function importCSV(input) {
     const imported = [];
     let errors = 0;
 
-    lines.forEach((line, i) => {
-      // Support comma or tab separated
+    lines.forEach((line) => {
       const sep = line.includes('\t') ? '\t' : ',';
       const parts = line.split(sep).map(p => p.trim().replace(/^["']|["']$/g, ''));
       if (parts.length < 2) { errors++; return; }
 
       let hebrew, english;
-      // Auto-detect which column is Hebrew (contains Hebrew chars)
       const isHebrew = s => /[\u0590-\u05FF]/.test(s);
       if (isHebrew(parts[0])) {
         hebrew = parts[0]; english = parts[1];
       } else if (isHebrew(parts[1])) {
         hebrew = parts[1]; english = parts[0];
       } else {
-        // Fallback: assume col1=Hebrew, col2=English
         hebrew = parts[0]; english = parts[1];
       }
 
@@ -778,29 +847,45 @@ function importCSV(input) {
       return;
     }
 
-    // Ask: replace or append
-    const action = confirm(
-      `Found ${imported.length} word pair${imported.length>1?'s':''} in "${file.name}".\n\nClick OK to REPLACE current words, or Cancel to APPEND to existing list.`
-    );
-
-    if (action) {
-      WORDS = imported;
-    } else {
-      // Merge, avoid exact duplicates
-      const existing = new Set(WORDS.map(w => w.hebrew));
-      imported.forEach(w => { if (!existing.has(w.hebrew)) WORDS.push(w); });
-    }
-
-    buildWordList();
-    buildEditList();
-    const msg = errors > 0
-      ? `✓ Imported ${imported.length} pairs (${errors} skipped)`
-      : `✓ Imported ${imported.length} pairs!`;
-    showToast(msg, true);
-    input.value = '';
+    _csvPending = { imported, errors, inputEl: input };
+    const modal = document.getElementById('csvModal');
+    document.getElementById('csvModalMsg').textContent =
+      `Found ${imported.length} word pair${imported.length>1?'s':''} in "${file.name}".${errors>0?' ('+errors+' rows skipped)':''}`;
+    modal.style.display = 'flex';
   };
   reader.readAsText(file, 'UTF-8');
 }
+
+function resolveCSV(append) {
+  if (!_csvPending) return;
+  const { imported, errors, inputEl } = _csvPending;
+  if (append) {
+    const existing = new Set(WORDS.map(w => w.hebrew));
+    imported.forEach(w => { if (!existing.has(w.hebrew)) WORDS.push(w); });
+  } else {
+    WORDS = imported;
+  }
+  buildWordList();
+  buildEditList();
+  const msg = errors > 0
+    ? `✓ ${append?'Added':'Imported'} ${imported.length} pairs (${errors} skipped)`
+    : `✓ ${append?'Added':'Imported'} ${imported.length} pairs!`;
+  showToast(msg, true);
+  inputEl.value = '';
+  closeCSVModal();
+}
+
+function cancelCSV() {
+  if (_csvPending) _csvPending.inputEl.value = '';
+  closeCSVModal();
+}
+
+function closeCSVModal() {
+  _csvPending = null;
+  document.getElementById('csvModal').style.display = 'none';
+}
+
+
 
 function addEditRow() {
   const list = document.getElementById('editList');
@@ -845,7 +930,215 @@ function showTab(name, tabEl) {
   if (name === 'memory') initMemory();
   if (name === 'match') initMatch();
   if (name === 'edit') buildEditList();
+  if (name === 'snake') startSnake();
+  if (name !== 'snake') stopSnake();
 }
+
+// ── SNAKE GAME ───────────────────────────────────────────
+let snakeInterval = null;
+let snakeDir = {x:1,y:0}, snakeNextDir = {x:1,y:0};
+let snakeBody = [], snakeWord = '', snakeFoods = [], snakeScoreVal = 0, snakeLevel = 1;
+const SZ = 40; // cell size px
+
+function startSnake() {
+  stopSnake();
+  const canvas = document.getElementById('snakeCanvas');
+  const cols = Math.floor(canvas.width / SZ);
+  const rows = Math.floor(canvas.height / SZ);
+  snakeDir = {x:1,y:0}; snakeNextDir = {x:1,y:0};
+  snakeScoreVal = 0; snakeLevel = 1;
+  document.getElementById('snakeScore').textContent = 0;
+  document.getElementById('snakeSpeed').textContent = 1;
+  snakeBody = [{x:3,y:Math.floor(rows/2)},{x:2,y:Math.floor(rows/2)},{x:1,y:Math.floor(rows/2)}];
+  pickSnakeWord();
+  spawnFoods(cols, rows);
+  snakeInterval = setInterval(() => snakeTick(cols, rows), 200);
+  document.getElementById('snakeStatus').textContent = '🐍 Eat the Hebrew word matching: ' + snakeWord;
+}
+
+function stopSnake() {
+  if (snakeInterval) { clearInterval(snakeInterval); snakeInterval = null; }
+}
+
+function pickSnakeWord() {
+  const w = WORDS[Math.floor(Math.random() * WORDS.length)];
+  snakeWord = w.english;
+  return w.hebrew;
+}
+
+function spawnFoods(cols, rows) {
+  snakeFoods = [];
+  // Pick a target word
+  const targetIdx = Math.floor(Math.random() * WORDS.length);
+  const target = WORDS[targetIdx];
+  snakeWord = target.english;
+  document.getElementById('snakeStatus').textContent = '🐍 Find the Hebrew for: ' + snakeWord;
+
+  // Add correct food + 2-3 decoys
+  const decoyCount = Math.min(3, WORDS.length - 1);
+  const pool = WORDS.filter(w => w.english !== target.english);
+  const decoys = pool.sort(() => Math.random() - 0.5).slice(0, decoyCount);
+  const allFoods = [{ hebrew: target.hebrew, correct: true }, ...decoys.map(d => ({hebrew: d.hebrew, correct: false}))];
+  allFoods.sort(() => Math.random() - 0.5);
+
+  allFoods.forEach((f, i) => {
+    let pos;
+    do { pos = {x: Math.floor(Math.random() * (cols-2))+1, y: Math.floor(Math.random() * (rows-2))+1}; }
+    while (snakeBody.some(s => s.x===pos.x && s.y===pos.y));
+    snakeFoods.push({...f, ...pos});
+  });
+}
+
+function snakeTick(cols, rows) {
+  snakeDir = {...snakeNextDir};
+  const head = {x: snakeBody[0].x + snakeDir.x, y: snakeBody[0].y + snakeDir.y};
+
+  // Wall collision
+  if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows) { snakeDie(); return; }
+  // Self collision
+  if (snakeBody.some(s => s.x===head.x && s.y===head.y)) { snakeDie(); return; }
+
+  snakeBody.unshift(head);
+
+  // Food collision
+  const eaten = snakeFoods.findIndex(f => f.x===head.x && f.y===head.y);
+  if (eaten >= 0) {
+    const food = snakeFoods[eaten];
+    if (food.correct) {
+      snakeScoreVal++;
+      snakeLevel = Math.floor(snakeScoreVal / 3) + 1;
+      document.getElementById('snakeScore').textContent = snakeScoreVal;
+      document.getElementById('snakeSpeed').textContent = snakeLevel;
+      clearInterval(snakeInterval);
+      snakeInterval = setInterval(() => snakeTick(cols, rows), Math.max(80, 200 - snakeLevel * 20));
+      spawnFoods(cols, rows);
+    } else {
+      // Wrong food — shrink if possible
+      snakeFoods.splice(eaten, 1);
+      if (snakeBody.length > 2) snakeBody.pop();
+      snakeBody.pop();
+      showToast('❌ Wrong! That\'s not ' + snakeWord);
+    }
+  } else {
+    snakeBody.pop();
+  }
+
+  drawSnake(cols, rows);
+}
+
+function snakeDie() {
+  stopSnake();
+  const canvas = document.getElementById('snakeCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(0,0,0,0.6)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#e8c97a';
+  ctx.font = 'bold 36px Heebo, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('💀 Game Over!', canvas.width/2, canvas.height/2 - 20);
+  ctx.fillStyle = '#f0ede6';
+  ctx.font = '22px Heebo, serif';
+  ctx.fillText('Score: ' + snakeScoreVal, canvas.width/2, canvas.height/2 + 20);
+  ctx.font = '16px Heebo, serif';
+  ctx.fillStyle = '#7a7570';
+  ctx.fillText('Click New Game to play again', canvas.width/2, canvas.height/2 + 55);
+  document.getElementById('snakeStatus').textContent = '💀 Game Over! Score: ' + snakeScoreVal;
+}
+
+function drawSnake(cols, rows) {
+  const canvas = document.getElementById('snakeCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+  ctx.lineWidth = 0.5;
+  for (let x=0;x<cols;x++) { ctx.beginPath();ctx.moveTo(x*SZ,0);ctx.lineTo(x*SZ,canvas.height);ctx.stroke(); }
+  for (let y=0;y<rows;y++) { ctx.beginPath();ctx.moveTo(0,y*SZ);ctx.lineTo(canvas.width,y*SZ);ctx.stroke(); }
+
+  // Foods
+  snakeFoods.forEach(f => {
+    const x = f.x*SZ+2, y = f.y*SZ+2, w = SZ-4, h = SZ-4;
+    ctx.fillStyle = f.correct ? 'rgba(122,201,160,0.25)' : 'rgba(201,122,122,0.18)';
+    ctx.strokeStyle = f.correct ? '#7ac9a0' : '#c97a7a';
+    ctx.lineWidth = 2;
+    roundRect(ctx, x, y, w, h, 8);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = f.correct ? '#7ac9a0' : '#f0ede6';
+    ctx.font = `bold ${SZ*0.42}px Heebo, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(f.hebrew, f.x*SZ + SZ/2, f.y*SZ + SZ/2);
+  });
+
+  // Snake body
+  for (let i = snakeBody.length-1; i >= 1; i--) {
+    const s = snakeBody[i];
+    const ratio = 1 - i/snakeBody.length;
+    ctx.fillStyle = `rgba(${Math.round(50+ratio*50)},${Math.round(120+ratio*80)},${Math.round(90+ratio*60)},0.85)`;
+    roundRect(ctx, s.x*SZ+3, s.y*SZ+3, SZ-6, SZ-6, 6);
+    ctx.fill();
+  }
+
+  // Snake head
+  const h = snakeBody[0];
+  ctx.fillStyle = '#e8c97a';
+  roundRect(ctx, h.x*SZ+1, h.y*SZ+1, SZ-2, SZ-2, 10);
+  ctx.fill();
+  ctx.strokeStyle = '#0d0d0d';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.fillStyle = '#0d0d0d';
+  const fontSize = snakeWord.length > 7 ? 8 : snakeWord.length > 5 ? 10 : 12;
+  ctx.font = `bold ${fontSize}px Heebo, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(snakeWord, h.x*SZ + SZ/2, h.y*SZ + SZ/2);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+// Keyboard controls
+document.addEventListener('keydown', e => {
+  if (!snakeInterval) return;
+  const map = {ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0},
+               w:{x:0,y:-1},s:{x:0,y:1},a:{x:-1,y:0},d:{x:1,y:0},
+               W:{x:0,y:-1},S:{x:0,y:1},A:{x:-1,y:0},D:{x:1,y:0}};
+  const nd = map[e.key];
+  if (nd && !(nd.x===-snakeDir.x && nd.y===-snakeDir.y)) {
+    snakeNextDir = nd;
+    e.preventDefault();
+  }
+});
+
+// Touch controls
+let _touchStart = null;
+document.getElementById && (() => {
+  document.addEventListener('touchstart', e => { _touchStart = e.touches[0]; }, {passive:true});
+  document.addEventListener('touchend', e => {
+    if (!_touchStart || !snakeInterval) return;
+    const dx = e.changedTouches[0].clientX - _touchStart.clientX;
+    const dy = e.changedTouches[0].clientY - _touchStart.clientY;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      const nd = dx>0?{x:1,y:0}:{x:-1,y:0};
+      if (!(nd.x===-snakeDir.x)) snakeNextDir = nd;
+    } else {
+      const nd = dy>0?{x:0,y:1}:{x:0,y:-1};
+      if (!(nd.y===-snakeDir.y)) snakeNextDir = nd;
+    }
+    _touchStart = null;
+  }, {passive:true});
+})();
+
+
 
 let toastTimer;
 function showToast(msg, success=false) {
@@ -873,5 +1166,6 @@ function showWin(game) {
 // Init
 buildWordList();
 </script>
-</body>
-</html>
+
+
+</body></html>
