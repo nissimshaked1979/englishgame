@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>האלף-בית — Hebrew Alphabet</title>
+<title>אלף-בית לימוד אותיות כתב שונות מאותיות דפוס</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0d0d0d;--surface:#141414;--card:#1a1a1a;--border:#2a2a2a;--accent:#b878f0;--accent2:#e8c97a;--text:#f0ede6;--muted:#7a7570;--success:#7ac9a0;--radius:12px;}
@@ -97,6 +97,12 @@ section.active{display:block;}
 .qm-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.38rem 0.9rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:0.76rem;letter-spacing:0.04em;text-transform:uppercase;transition:all 0.2s;}
 .qm-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
 
+/* LETTER SET TOGGLE */
+.set-toggle{display:flex;justify-content:center;gap:0.5rem;margin:1rem 0;flex-wrap:wrap;}
+.set-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.45rem 1.1rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:0.82rem;letter-spacing:0.04em;transition:all 0.2s;}
+.set-btn:hover{border-color:var(--accent);color:var(--text);}
+.set-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
+
 /* SNAKE */
 #snakeStatus{font-size:1rem;color:var(--muted);margin-bottom:0.5rem;text-align:center;}
 #snakeCanvas{display:block;margin:0 auto;border:2px solid var(--accent);border-radius:12px;background:#0a0a14;max-width:100%;}
@@ -115,17 +121,23 @@ section.active{display:block;}
 </head>
 <body>
 <header>
-  <h1>האלף-בית העברי</h1>
-  <p>Hebrew Alphabet — <span style="color:var(--accent2);font-weight:700;">Print מודפס</span> &nbsp;vs&nbsp; <span style="color:var(--accent);font-weight:700;">Handwriting כתב יד</span></p>
+  <h1>אותיות כתב ודפוס</h1>
+  <p><span style="color:var(--accent2);font-weight:700;">אותיות דפוס</span> &nbsp;מול&nbsp; <span style="color:var(--accent);font-weight:700;"> כתב יד</span></p>
   <div class="divider"></div>
 </header>
 <div class="tabs">
-  <button class="tab active" onclick="showTab('letters',this)">א האלף-בית</button>
+  <button class="tab active" onclick="showTab('letters',this)">אלף בית</button>
   <button class="tab" onclick="showTab('memory',this)">🃏 זיכרון</button>
   <button class="tab" onclick="showTab('match',this)">🔗 התאמה</button>
   <button class="tab" onclick="showTab('snake',this)">🐍 נחש</button>
 </div>
-<section id="letters" class="active"><div class="letter-grid" id="letterGrid"></div></section>
+<section id="letters" class="active">
+  <div class="set-toggle" id="globalSetToggle">
+    <button class="set-btn active" onclick="setLetterMode('different')">רק אותיות שונות</button>
+    <button class="set-btn" onclick="setLetterMode('all')">כל האותיות</button>
+  </div>
+  <div class="letter-grid" id="letterGrid"></div>
+</section>
 <section id="quiz">
   <div class="qm-bar">
     <button class="qm-btn active" id="qmA" onclick="setQM('print')">See Print → Name It</button>
@@ -147,276 +159,46 @@ section.active{display:block;}
 </section>
 <section id="memory">
   <div class="game-controls">
-    <button class="btn" onclick="initMemory()">↺ New Game</button>
-    <div class="score-badge">Matches: <span id="memScore">0</span>/<span id="memTotal">0</span> &nbsp;|&nbsp; Moves: <span id="memMoves">0</span></div>
+    <button class="btn" onclick="initMemory()">↺ משחק חדש</button>
+    <div class="score-badge">התאמות: <span id="memScore">0</span>/<span id="memTotal">0</span> &nbsp;|&nbsp; מהלכים: <span id="memMoves">0</span></div>
   </div>
   <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">
-    Match each <span style="color:var(--accent2);font-weight:700;">print letter</span> with its <span style="color:var(--accent);font-weight:700;">handwritten</span> form.
+    התאם כל <span style="color:var(--accent2);font-weight:700;">אות דפוס</span> עם הצורה הכתובה שלו <span style="color:var(--accent);font-weight:700;">כתב יד</span>.
   </p>
   <div class="memory-grid" id="memoryGrid"></div>
 </section>
 <section id="match">
   <div class="game-controls">
-    <button class="btn" onclick="initMatch()">↺ New Game</button>
-    <div class="score-badge">Correct: <span id="matchScore">0</span>/<span id="matchTotal">0</span></div>
+    <button class="btn" onclick="initMatch()">↺ משחק חדש</button>
+    <div class="score-badge">נכון: <span id="matchScore">0</span>/<span id="matchTotal">0</span></div>
   </div>
   <div class="match-progress"><div class="match-progress-bar" id="matchBar"></div></div>
   <div class="word-bank">
-    <div class="word-bank-label">Click a handwritten letter → then click the matching print box below</div>
+    <div class="word-bank-label">לחץ על אות בכתב - ואז לחץ על אות הדפוס המתאימה למטה</div>
     <div class="word-bank-chips" id="wordBankChips"></div>
   </div>
   <div class="answer-grid" id="answerGrid"></div>
-  <div class="submit-row"><button class="submit-btn" onclick="submitAnswers()">Submit Answers ✓</button></div>
+  <div class="submit-row"><button class="submit-btn" onclick="submitAnswers()"> שלחו תשובה✓</button></div>
 </section>
 <section id="snake">
   <div class="game-controls">
-    <button class="btn" onclick="startSnake()">↺ New Game</button>
-    <div class="score-badge">Score: <span id="snakeScore">0</span> &nbsp;|&nbsp; Speed: <span id="snakeSpeed">1</span></div>
+    <button class="btn" onclick="startSnake()">↺ משחק חדש</button>
+    <div class="score-badge">ניקוד: <span id="snakeScore">0</span> &nbsp;|&nbsp; מהירות: <span id="snakeSpeed">1</span></div>
   </div>
-  <div id="snakeStatus">🐍 Snake head = print letter. Eat its handwritten form to grow!</div>
+  <div id="snakeStatus">🐍 ראש הנחש = אות דפוס. אכל את הצורה הכתובה שלו כדי לגדול!</div>
   <canvas id="snakeCanvas" width="600" height="440"></canvas>
-  <div class="snake-hint">↑ ↓ ← → or WASD · Touch: swipe</div>
+  <div class="snake-hint">↑ ↓ ← → או WASD · מגע: החלק</div>
 </section>
 <div class="toast" id="toast"></div>
 <div class="win-overlay" id="winOverlay">
   <div class="win-box">
     <h2 id="winTitle">🎉 מצוין!</h2><p id="winMessage"></p>
-    <button class="btn success" id="winBtn">Play Again</button>
+    <button class="btn success" id="winBtn">שחק שוב</button>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════
-// CANVAS DRAW FUNCTIONS — one per Hebrew letter
-// drawLetter(ctx, color, x, y, w, h)
-// All paths designed in 0-60 × 0-70 coordinate space,
-// then scaled to actual canvas size via transform.
-// ═══════════════════════════════════════════════════════════
-const DRAW = {
-  'א': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    stroke(c,[[30,14],[18,38]]);
-    c.lineWidth=3.0; stroke(c,[[18,38],[12,54]]);
-    c.lineWidth=3.5; stroke(c,[[30,14],[44,32]]);
-    c.lineWidth=3.0; stroke(c,[[20,24],[40,46]]);
-  },
-  'ב': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath(); c.moveTo(44,14);
-    c.quadraticCurveTo(16,12,14,30);
-    c.quadraticCurveTo(12,52,44,56); c.stroke();
-  },
-  'ג': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath(); c.moveTo(30,12); c.lineTo(30,48);
-    c.quadraticCurveTo(30,58,42,56); c.stroke();
-  },
-  'ד': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath(); c.moveTo(40,10);
-    c.quadraticCurveTo(46,16,36,34);
-    c.quadraticCurveTo(26,52,16,60); c.stroke();
-  },
-  'ה': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath();
-    c.moveTo(40,56); c.lineTo(40,28);
-    c.quadraticCurveTo(40,12,28,12);
-    c.quadraticCurveTo(16,12,16,24);
-    c.quadraticCurveTo(16,36,28,36); c.lineTo(40,36);
-    c.stroke();
-  },
-  'ו': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath(); c.moveTo(30,10);
-    c.quadraticCurveTo(35,10,35,18); c.lineTo(35,56); c.stroke();
-  },
-  'ז': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath(); c.moveTo(18,14); c.lineTo(42,14);
-    c.quadraticCurveTo(44,30,28,56); c.stroke();
-  },
-  'ח': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath();
-    c.moveTo(14,56); c.lineTo(14,22);
-    c.quadraticCurveTo(14,10,30,10);
-    c.quadraticCurveTo(46,10,46,22); c.lineTo(46,56);
-    c.stroke();
-  },
-  'ט': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath();
-    c.moveTo(14,24); c.lineTo(14,46);
-    c.quadraticCurveTo(14,58,30,58);
-    c.quadraticCurveTo(46,58,46,46); c.lineTo(46,12);
-    c.stroke();
-  },
-  'י': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath(); c.moveTo(34,18);
-    c.quadraticCurveTo(40,14,37,26);
-    c.quadraticCurveTo(34,36,30,44); c.stroke();
-  },
-  'כ': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(44,16);
-    c.quadraticCurveTo(14,16,14,35);
-    c.quadraticCurveTo(14,56,44,56);
-    c.stroke();
-  },
-  'ך': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(42,14);
-    c.quadraticCurveTo(14,14,14,32);
-    c.quadraticCurveTo(14,46,42,46);
-    c.lineTo(42,66);
-    c.stroke();
-  },
-  'ל': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath(); c.moveTo(34,58); c.lineTo(34,14);
-    c.quadraticCurveTo(34,4,22,6); c.stroke();
-  },
-  'מ': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath();
-    c.moveTo(14,56); c.lineTo(14,28);
-    c.quadraticCurveTo(14,12,30,12);
-    c.quadraticCurveTo(46,12,46,28); c.lineTo(46,56);
-    c.stroke();
-    c.lineWidth=2.5;
-    c.beginPath(); c.moveTo(46,22);
-    c.quadraticCurveTo(54,18,52,8); c.stroke();
-  },
-  'ם': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath(); c.moveTo(14,14); c.lineTo(46,14);
-    c.lineTo(46,54); c.lineTo(14,54); c.closePath(); c.stroke();
-  },
-  'נ': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath();
-    c.moveTo(40,14);
-    c.quadraticCurveTo(44,14,44,26);
-    c.lineTo(44,44);
-    c.quadraticCurveTo(44,56,30,56); c.lineTo(14,56);
-    c.stroke();
-  },
-  'ן': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath(); c.moveTo(30,14); c.lineTo(30,66); c.stroke();
-  },
-  'ס': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(30,12);
-    c.quadraticCurveTo(50,12,50,34);
-    c.quadraticCurveTo(50,56,30,56);
-    c.quadraticCurveTo(10,56,10,34);
-    c.quadraticCurveTo(10,12,30,12);
-    c.closePath(); c.stroke();
-  },
-  'ע': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath(); c.moveTo(30,14);
-    c.quadraticCurveTo(28,36,18,50);
-    c.quadraticCurveTo(12,58,10,66); c.stroke();
-    c.beginPath(); c.moveTo(30,14);
-    c.quadraticCurveTo(32,36,42,50);
-    c.quadraticCurveTo(48,58,50,66); c.stroke();
-  },
-  'פ': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(46,34);
-    c.quadraticCurveTo(46,10,26,10);
-    c.quadraticCurveTo(10,10,10,30);
-    c.quadraticCurveTo(10,50,26,50);
-    c.quadraticCurveTo(38,50,38,38);
-    c.quadraticCurveTo(38,28,28,28);
-    c.stroke();
-  },
-  'ף': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(46,28);
-    c.quadraticCurveTo(46,6,26,6);
-    c.quadraticCurveTo(10,6,10,24);
-    c.quadraticCurveTo(10,42,26,42);
-    c.quadraticCurveTo(38,42,38,32);
-    c.quadraticCurveTo(38,24,28,24);
-    c.stroke();
-    c.beginPath();
-    c.moveTo(10,42); c.lineTo(10,66);
-    c.stroke();
-  },
-  'צ': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(16,10);
-    c.quadraticCurveTo(46,10,46,22);
-    c.quadraticCurveTo(46,34,16,34);
-    c.stroke();
-    c.beginPath();
-    c.moveTo(16,34);
-    c.quadraticCurveTo(46,34,46,46);
-    c.quadraticCurveTo(46,58,16,58);
-    c.stroke();
-  },
-  'ץ': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(16,8);
-    c.quadraticCurveTo(44,8,44,20);
-    c.quadraticCurveTo(44,32,16,32);
-    c.stroke();
-    c.beginPath();
-    c.moveTo(16,32);
-    c.quadraticCurveTo(44,32,44,44);
-    c.lineTo(44,66);
-    c.stroke();
-  },
-  'ק': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath();
-    c.moveTo(38,14);
-    c.quadraticCurveTo(12,10,12,32);
-    c.quadraticCurveTo(12,48,28,48);
-    c.stroke();
-    c.beginPath(); c.moveTo(38,14); c.lineTo(38,62);
-    c.stroke();
-  },
-  'ר': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round';
-    c.beginPath();
-    c.moveTo(18,14); c.quadraticCurveTo(46,10,46,30);
-    c.lineTo(46,56); c.stroke();
-  },
-  'ש': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    // Three prongs connected by curved base
-    stroke(c,[[8,18],[8,48]]);
-    stroke(c,[[28,10],[28,48]]);
-    stroke(c,[[48,18],[48,48]]);
-    c.beginPath();
-    c.moveTo(8,48);
-    c.quadraticCurveTo(18,58,28,48);
-    c.quadraticCurveTo(38,58,48,48);
-    c.stroke();
-  },
-  'ת': (c,col)=>{
-    c.strokeStyle=col; c.lineWidth=3.5; c.lineCap='round'; c.lineJoin='round';
-    c.beginPath();
-    c.moveTo(8,62); c.quadraticCurveTo(14,54,14,46);
-    c.lineTo(14,22);
-    c.quadraticCurveTo(14,10,30,10);
-    c.quadraticCurveTo(46,10,46,22); c.lineTo(46,56);
-    c.stroke();
-  },
-};
+
 
 function stroke(ctx, pts) {
   ctx.beginPath();
@@ -473,7 +255,25 @@ function makeLetterEl(letter, color, fontSize) {
 }
 
 // ── DATA ─────────────────────────────────────────────────
-const AB = [
+// Letters that look DIFFERENT in handwriting vs print
+const AB_DIFFERENT = [
+  {p:'א',name:'Alef',     sound:'silent / ʔ', num:1},
+  {p:'ב',name:'Bet/Vet',  sound:'b / v',      num:2},
+  {p:'ג',name:'Gimel',    sound:'g',           num:3},
+  {p:'ד',name:'Dalet',    sound:'d',           num:4},
+  {p:'ז',name:'Zayin',    sound:'z',           num:7},
+  {p:'ט',name:'Tet',      sound:'t',           num:9},
+  {p:'י',name:'Yod',      sound:'y / i',      num:10},
+  {p:'כ',name:'Kaf/Khaf', sound:'k / kh',     num:20},
+  {p:'ל',name:'Lamed',    sound:'l',           num:30},
+  {p:'מ',name:'Mem',      sound:'m',           num:40},
+  {p:'ע',name:'Ayin',     sound:'silent / ʕ', num:70},
+  {p:'צ',name:'Tsadi',    sound:'ts',          num:90},
+  {p:'ש',name:'Shin/Sin', sound:'sh / s',     num:300},
+];
+
+// ALL Hebrew letters
+const AB_ALL = [
   {p:'א',name:'Alef',     sound:'silent / ʔ', num:1},
   {p:'ב',name:'Bet/Vet',  sound:'b / v',      num:2},
   {p:'ג',name:'Gimel',    sound:'g',           num:3},
@@ -502,6 +302,33 @@ const AB = [
   {p:'ש',name:'Shin/Sin', sound:'sh / s',     num:300},
   {p:'ת',name:'Tav',      sound:'t',           num:400},
 ];
+
+// Active letter set — default to different-only
+let AB = [...AB_DIFFERENT];
+let letterMode = 'different';
+
+function setLetterMode(mode) {
+  letterMode = mode;
+  AB = mode === 'all' ? [...AB_ALL] : [...AB_DIFFERENT];
+  // Update toggle buttons
+  document.querySelectorAll('.set-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.set-btn').forEach(b => {
+    if ((mode === 'different' && b.textContent.includes('שונות')) ||
+        (mode === 'all' && b.textContent.includes('כל'))) {
+      b.classList.add('active');
+    }
+  });
+  // Refresh current view
+  buildLetterGrid();
+  const activeSection = document.querySelector('section.active');
+  if (activeSection) {
+    const id = activeSection.id;
+    if (id === 'memory') initMemory();
+    if (id === 'match') initMatch();
+    if (id === 'quiz') startQuiz();
+    if (id === 'snake') startSnake();
+  }
+}
 
 const CC=['cc0','cc1','cc2','cc3','cc4','cc5','cc6','cc7','cc8','cc9','cc10','cc11'];
 // Darker colors matching chip backgrounds for chip canvases
@@ -779,7 +606,7 @@ function spawnFood(cols,rows) {
   snkFoods=[];
   snkTarget = AB[Math.floor(Math.random()*AB.length)];
   snkPrint = snkTarget.p;
-  document.getElementById('snakeStatus').textContent=`🐍 Find the handwritten form of: ${snkTarget.p} (${snkTarget.name})`;
+  document.getElementById('snakeStatus').textContent=`🐍 אות נוכחית: ${snkTarget.p} (${snkTarget.name})`;
   const dec = AB.filter(l=>l.name!==snkTarget.name).sort(()=>Math.random()-0.5).slice(0,4);
   [{l:snkTarget,ok:true},...dec.map(d=>({l:d,ok:false}))].sort(()=>Math.random()-0.5).forEach(f=>{
     let pos;
@@ -809,7 +636,7 @@ function snkTick(cols,rows) {
       snkFoods.splice(ei,1);
       if(snkBody.length>2)snkBody.pop();
       snkBody.pop();
-      showToast('❌ Wrong! Look for: '+snkPrint);
+      showToast('❌ שגוי! חפש את: '+snkPrint);
     }
   } else {snkBody.pop();}
   drawSnake(cols,rows);
@@ -820,12 +647,12 @@ function snkDie() {
   const cv=document.getElementById('snakeCanvas'),ctx=cv.getContext('2d');
   ctx.fillStyle='rgba(0,0,0,0.65)'; ctx.fillRect(0,0,cv.width,cv.height);
   ctx.fillStyle='#b878f0'; ctx.font='bold 34px Heebo,serif'; ctx.textAlign='center';
-  ctx.fillText('💀 Game Over!',cv.width/2,cv.height/2-20);
+  ctx.fillText('💀!סוף משחק',cv.width/2,cv.height/2-20);
   ctx.fillStyle='#f0ede6'; ctx.font='20px Heebo,serif';
-  ctx.fillText('Score: '+snkScore,cv.width/2,cv.height/2+20);
+  ctx.fillText('ניקוד: '+snkScore,cv.width/2,cv.height/2+20);
   ctx.fillStyle='#7a7570'; ctx.font='14px Heebo,serif';
-  ctx.fillText('Click New Game to play again',cv.width/2,cv.height/2+52);
-  document.getElementById('snakeStatus').textContent='💀 Game Over! Score: '+snkScore;
+  ctx.fillText('לחץ על משחק חדש כדי לשחק שוב',cv.width/2,cv.height/2+52);
+  document.getElementById('snakeStatus').textContent='💀! סוף משחק ניקוד: '+snkScore;
 }
 
 function drawSnake(cols,rows) {
