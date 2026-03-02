@@ -170,7 +170,7 @@ section.active{display:block;}
     <div class="score-badge">התאמות: <span id="memScore">0</span>/<span id="memTotal">0</span> &nbsp;|&nbsp; מהלכים: <span id="memMoves">0</span></div>
   </div>
   <p style="font-size:0.8rem;color:var(--muted);margin-bottom:1rem;">
-    התאם כל <span style="color:var(--accent2);font-weight:700;">אות דפוס</span> עם הצורה הכתובה שלו <span style="color:var(--accent);font-weight:700;">כתב יד</span>.
+    התאימו כל <span style="color:var(--accent2);font-weight:700;">אות דפוס</span> עם הצורה הכתובה שלה <span style="color:var(--accent);font-weight:700;">בכתב יד</span>.
   </p>
   <div class="memory-grid" id="memoryGrid"></div>
 </section>
@@ -181,7 +181,7 @@ section.active{display:block;}
   </div>
   <div class="match-progress"><div class="match-progress-bar" id="matchBar"></div></div>
   <div class="word-bank">
-    <div class="word-bank-label">לחץ על אות בכתב - ואז לחץ על אות הדפוס המתאימה למטה</div>
+    <div class="word-bank-label">לחצו על אות בכתב - ואז לחץ על אות הדפוס המתאימה למטה</div>
     <div class="word-bank-chips" id="wordBankChips"></div>
   </div>
   <div class="answer-grid" id="answerGrid"></div>
@@ -493,7 +493,7 @@ function initMemory() {
   grid.innerHTML = '';
   cards.forEach(c => {
     const el = document.createElement('div');
-    el.className='mem-card'; el.dataset.id=c.id; el.dataset.type=c.type;
+    el.className='mem-card'; el.dataset.id=c.id; el.dataset.type=c.type; el.dataset.name=c.l.name;
     const back = document.createElement('div'); back.className='mem-card-back';
     if (c.type==='print') {
       back.innerHTML = `<div class="mc-print">${c.l.p}</div><div class="mc-name">${c.l.name}</div>`;
@@ -515,6 +515,7 @@ function initMemory() {
 function flipMem(el) {
   if(mLocked||el.classList.contains('flipped')||el.classList.contains('matched'))return;
   el.classList.add('flipped'); mFlipped.push(el);
+  speakName(el.dataset.name);
   if(mFlipped.length===2){
     mLocked=true; mMoves++;
     document.getElementById('memMoves').textContent=mMoves;
