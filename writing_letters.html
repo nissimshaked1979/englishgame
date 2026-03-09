@@ -107,29 +107,29 @@ section.active{display:block;}
 .qm-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
 
 /* REACTION GAME */
-#reaction-arena{position:relative;background:var(--card);border:2px solid var(--border);border-radius:20px;min-height:320px;overflow:hidden;margin-bottom:1.4rem;touch-action:none;}
-.reaction-letter{position:absolute;font-family:'Heebo',sans-serif;font-weight:900;font-size:5rem;color:var(--accent2);text-shadow:0 0 30px rgba(232,201,122,0.6);animation:letterPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275);cursor:default;user-select:none;line-height:1;transition:transform 0.1s;}
+#reaction-arena{position:relative;background:var(--card);border:2px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:0.7rem;touch-action:none;display:flex;align-items:center;justify-content:center;min-height:clamp(120px,28vw,200px);}
+#react-letter-display{font-family:'Heebo',sans-serif;font-weight:900;font-size:clamp(4rem,18vw,7rem);color:var(--accent2);line-height:1;display:flex;align-items:center;justify-content:center;width:100%;padding:0.5rem 0;}
+.reaction-letter{position:absolute;font-family:'Heebo',sans-serif;font-weight:900;font-size:5rem;color:var(--accent2);text-shadow:0 0 30px rgba(232,201,122,0.6);animation:letterPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275);cursor:default;user-select:none;line-height:1;}
 @keyframes letterPop{from{opacity:0;transform:scale(0.3) rotate(-15deg);}to{opacity:1;transform:scale(1) rotate(0deg);}}
-.reaction-choices{display:grid;grid-template-columns:repeat(4,1fr);gap:0.7rem;}
-@media(max-width:500px){.reaction-choices{grid-template-columns:repeat(2,1fr);}}
-.react-btn{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1rem 0.5rem;cursor:pointer;font-family:'Guttman Yad-Brush',cursive;font-size:3.2rem;color:#b878f0;line-height:1;transition:all 0.15s;text-align:center;touch-action:manipulation;}
+.reaction-choices{display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;}
+.react-btn{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:0.5rem 0.2rem;cursor:pointer;font-family:'Guttman Yad-Brush',cursive;font-size:clamp(1.6rem,7vw,2.8rem);color:#b878f0;line-height:1;transition:all 0.15s;text-align:center;touch-action:manipulation;min-height:clamp(56px,14vw,80px);}
 .react-btn:hover:not(:disabled){border-color:var(--accent);transform:scale(1.06);background:rgba(184,120,240,0.1);}
 .react-btn.correct-flash{background:rgba(122,201,160,0.25);border-color:var(--success);transform:scale(1.1);}
 .react-btn.wrong-flash{background:rgba(201,122,138,0.25);border-color:#c97a8a;animation:shake 0.35s;}
-.reaction-hud{display:flex;align-items:center;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap;}
-.reaction-hud .hud-item{font-size:0.85rem;color:var(--muted);}
-.reaction-hud .hud-item span{color:var(--accent);font-weight:700;font-size:1.1rem;}
-.reaction-timer-bar{background:var(--card);border:1px solid var(--border);border-radius:100px;height:8px;margin-bottom:0.8rem;overflow:hidden;}
+.reaction-hud{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;flex-wrap:wrap;}
+.reaction-hud .hud-item{font-size:0.75rem;color:var(--muted);}
+.reaction-hud .hud-item span{color:var(--accent);font-weight:700;font-size:0.9rem;}
+.reaction-timer-bar{background:var(--card);border:1px solid var(--border);border-radius:100px;height:7px;margin-bottom:0.5rem;overflow:hidden;}
 .reaction-timer-fill{height:100%;background:linear-gradient(90deg,var(--success),var(--accent2),#e05060);border-radius:100px;transition:width 0.1s linear;width:100%;}
-.difficulty-badge{display:inline-block;padding:0.2rem 0.8rem;border-radius:100px;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.reaction-rt{font-size:0.7rem;color:var(--muted);text-align:right;margin-top:0.2rem;}
+.difficulty-badge{display:inline-block;padding:0.2rem 0.7rem;border-radius:100px;font-size:0.7rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}
 .diff-1{background:rgba(122,201,160,0.2);color:var(--success);}
 .diff-2{background:rgba(232,201,122,0.2);color:var(--accent2);}
 .diff-3{background:rgba(184,120,240,0.2);color:var(--accent);}
 .diff-4{background:rgba(224,80,80,0.15);color:#e05060;}
-.reaction-rt{font-size:0.72rem;color:var(--muted);text-align:right;margin-top:0.3rem;}
 
 /* WORD BUILDER */
-.wb-word-display{display:flex;justify-content:center;gap:0.5rem;margin:1.2rem 0;flex-wrap:wrap;}
+.wb-word-display{display:flex;justify-content:center;gap:0.5rem;margin:1.2rem 0;flex-wrap:wrap;direction:rtl;}
 .wb-slot{width:60px;height:70px;border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Heebo',sans-serif;font-size:2.4rem;font-weight:700;color:var(--accent2);background:var(--card);transition:all 0.2s;position:relative;cursor:pointer;}
 .wb-slot.filled{border-style:solid;border-color:var(--accent);background:rgba(184,120,240,0.1);}
 .wb-slot.correct{border-color:var(--success);background:rgba(122,201,160,0.12);color:var(--success);}
@@ -194,26 +194,31 @@ section.active{display:block;}
 .set-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
 
 /* SPIN WHEEL */
-.wheel-wrap{display:flex;flex-direction:column;align-items:center;gap:1.2rem;}
-.wheel-container{position:relative;width:min(360px,90vw);height:min(360px,90vw);}
-#wheelCanvas{border-radius:50%;box-shadow:0 0 40px rgba(184,120,240,0.35),0 0 80px rgba(184,120,240,0.12);display:block;}
-.wheel-pointer{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:32px solid var(--accent2);filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));z-index:10;}
-.wheel-spin-btn{font-size:1.1rem;padding:0.85rem 3rem;border-radius:100px;background:linear-gradient(135deg,var(--accent),#7040c0);border:none;color:#fff;font-family:'Heebo',sans-serif;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(184,120,240,0.4);}
-.wheel-spin-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 28px rgba(184,120,240,0.55);}
+.wheel-wrap{display:flex;flex-direction:column;align-items:center;gap:0.7rem;}
+.wheel-layout{display:flex;flex-direction:row;align-items:flex-start;justify-content:center;gap:1rem;width:100%;flex-wrap:wrap;}
+.wheel-container{position:relative;width:min(280px,55vw);height:min(280px,55vw);flex-shrink:0;}
+@media(max-width:520px){.wheel-container{width:min(220px,72vw);height:min(220px,72vw);}.wheel-layout{flex-direction:column;align-items:center;}}
+#wheelCanvas{border-radius:50%;box-shadow:0 0 30px rgba(184,120,240,0.3);display:block;width:100%;height:100%;}
+.wheel-pointer{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:26px solid var(--accent2);filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5));z-index:10;}
+.wheel-spin-btn{font-size:1rem;padding:0.7rem 2rem;border-radius:100px;background:linear-gradient(135deg,var(--accent),#7040c0);border:none;color:#fff;font-family:'Heebo',sans-serif;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 16px rgba(184,120,240,0.4);width:100%;max-width:min(280px,55vw);}
+@media(max-width:520px){.wheel-spin-btn{max-width:90vw;}}
+.wheel-spin-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 24px rgba(184,120,240,0.55);}
 .wheel-spin-btn:disabled{opacity:0.5;cursor:default;}
-.wheel-result{text-align:center;min-height:180px;}
-.wheel-result-letter{font-family:'Heebo',sans-serif;font-size:5rem;font-weight:900;color:var(--accent2);animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
+.wheel-right-panel{flex:1;min-width:160px;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:0.5rem;}
+@media(max-width:520px){.wheel-right-panel{width:100%;max-width:100%;}}
+.wheel-result{text-align:center;width:100%;}
+.wheel-result-letter{font-family:'Heebo',sans-serif;font-size:clamp(2.8rem,10vw,4.5rem);font-weight:900;color:var(--accent2);animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);line-height:1;}
 @keyframes popIn{from{opacity:0;transform:scale(0.3);}to{opacity:1;transform:scale(1);}}
-.wheel-question{font-size:1rem;color:var(--muted);margin:0.3rem 0 0.8rem;}
-.wheel-choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem;max-width:420px;width:100%;}
-.wheel-choice-btn{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1rem 0.5rem;cursor:pointer;font-family:'Guttman Yad-Brush',cursive;font-size:3rem;color:#b878f0;line-height:1.1;transition:all 0.15s;text-align:center;touch-action:manipulation;}
-.wheel-choice-btn .wc-name{font-family:'Heebo',sans-serif;font-size:0.72rem;color:var(--muted);display:block;margin-top:0.2rem;}
-.wheel-choice-btn:hover:not(:disabled){border-color:var(--accent);transform:translateY(-3px);background:rgba(184,120,240,0.08);}
+.wheel-question{font-size:0.85rem;color:var(--muted);margin:0.2rem 0 0.5rem;}
+.wheel-choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.45rem;width:100%;}
+.wheel-choice-btn{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:0.6rem 0.3rem;cursor:pointer;font-family:'Guttman Yad-Brush',cursive;font-size:clamp(1.8rem,7vw,2.6rem);color:#b878f0;line-height:1.1;transition:all 0.15s;text-align:center;touch-action:manipulation;}
+.wheel-choice-btn .wc-name{font-family:'Heebo',sans-serif;font-size:0.62rem;color:var(--muted);display:block;margin-top:0.15rem;}
+.wheel-choice-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(184,120,240,0.08);}
 .wheel-choice-btn.correct{background:rgba(122,201,160,0.2);border-color:var(--success);color:var(--success);}
 .wheel-choice-btn.wrong{background:rgba(201,122,138,0.15);border-color:#c97a8a;animation:shake 0.35s;}
-.wheel-hud{display:flex;gap:1.5rem;align-items:center;font-size:0.9rem;color:var(--muted);}
-.wheel-hud span{color:var(--accent);font-weight:700;font-size:1.1rem;}
-.wheel-feedback{font-size:1.1rem;min-height:1.4rem;text-align:center;margin-top:0.2rem;}
+.wheel-hud{display:flex;gap:1rem;align-items:center;font-size:0.82rem;color:var(--muted);}
+.wheel-hud span{color:var(--accent);font-weight:700;}
+.wheel-feedback{font-size:0.9rem;min-height:1.2rem;text-align:center;}
 
 #snakeStatus{font-size:1rem;color:var(--muted);margin-bottom:0.5rem;text-align:center;}
 #snakeCanvas{display:block;margin:0 auto;border:2px solid var(--accent);border-radius:12px;background:#0a0a14;max-width:100%;}
@@ -306,7 +311,7 @@ section.active{display:block;}
   </div>
   <div class="reaction-timer-bar"><div class="reaction-timer-fill" id="react-timer-fill"></div></div>
   <div id="reaction-arena">
-    <div id="react-letter-display" style="display:flex;align-items:center;justify-content:center;height:280px;font-family:'Heebo',sans-serif;font-weight:900;font-size:8rem;color:var(--accent2);"></div>
+    <div id="react-letter-display"></div>
   </div>
   <div class="reaction-choices" id="react-choices"></div>
   <div class="reaction-rt" id="react-rt-display"></div>
@@ -381,13 +386,19 @@ section.active{display:block;}
     <button class="btn" onclick="initWheel()" style="margin-right:auto">↺ אפס</button>
   </div>
   <div class="wheel-wrap">
-    <div class="wheel-container">
-      <div class="wheel-pointer"></div>
-      <canvas id="wheelCanvas"></canvas>
-    </div>
-    <button class="wheel-spin-btn" id="wheelSpinBtn" onclick="spinWheel()">🎡 סובב!</button>
-    <div class="wheel-result" id="wheel-result">
-      <div style="color:var(--muted);font-size:0.9rem;padding-top:2rem;">סובב את הגלגל כדי לקבל אות!</div>
+    <div class="wheel-layout">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.6rem;">
+        <div class="wheel-container">
+          <div class="wheel-pointer"></div>
+          <canvas id="wheelCanvas"></canvas>
+        </div>
+        <button class="wheel-spin-btn" id="wheelSpinBtn" onclick="spinWheel()">🎡 סובב!</button>
+      </div>
+      <div class="wheel-right-panel">
+        <div class="wheel-result" id="wheel-result">
+          <div style="color:var(--muted);font-size:0.85rem;padding-top:1rem;">סובב את הגלגל כדי לקבל אות!</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -464,7 +475,6 @@ function makeLetterEl(letter, color, fontSize) {
   el.style.display = 'block';
   el.style.lineHeight = '1.2';
   el.style.textAlign = 'center';
-  el.style.direction = 'rtl';
   el.style.fontWeight = '400';
   return el;
 }
@@ -1119,7 +1129,6 @@ function nextReaction() {
     // Show print letter in arena
     arena.innerHTML = '';
     const el = document.createElement('div');
-    el.style.cssText = 'font-family:Heebo,sans-serif;font-weight:900;font-size:7rem;color:var(--accent2);line-height:1;';
     el.textContent = reactCurrent.p;
     arena.appendChild(el);
 
@@ -1155,7 +1164,7 @@ function nextReaction() {
       reactActive = false;
       reactStreak = 0;
       document.getElementById('react-streak').textContent = 0;
-      arena.innerHTML = '<span style="color:#c97a8a;font-size:1.5rem;font-family:Heebo,sans-serif;">⏰ הזמן פג!</span>';
+      arena.innerHTML = '<span style="color:#c97a8a;font-size:1.2rem;font-family:Heebo,sans-serif;font-weight:700;">⏰ הזמן פג!</span>';
       document.querySelectorAll('.react-btn').forEach(b=>b.disabled=true);
       // show correct answer
       document.querySelectorAll('.react-btn').forEach(b => {
@@ -1339,7 +1348,9 @@ function wbDropOnSlot(slot, chip) {
     document.querySelectorAll('.wb-letter-chip').forEach(c=>{if(c.dataset.letter===old&&c.classList.contains('used')){c.classList.remove('used');}});
   }
   src.classList.add('used');
-  slot.textContent = src.dataset.letter;
+  slot.innerHTML='';
+  const handEl = makeLetterEl(src.dataset.letter, '#b878f0', '2rem');
+  slot.appendChild(handEl);
   slot.classList.add('filled');
   slot.classList.remove('wrong');
   slot.dataset.placed = src.dataset.letter;
@@ -1371,19 +1382,35 @@ function checkWBWord() {
   }
 }
 function wbHint() {
-  // Reveal one random unfilled/wrong slot
+  // Find one unfilled slot and fill it correctly
   const slots = [...document.querySelectorAll('.wb-slot:not(.correct)')];
   if(!slots.length) return;
   const slot = slots[Math.floor(Math.random()*slots.length)];
   const correct = slot.dataset.correct;
-  // find unused chip with that letter
+
+  // Free up any chip already in this slot
+  if(slot.dataset.placed) {
+    const prev = document.querySelectorAll('.wb-letter-chip');
+    prev.forEach(c=>{ if(c.dataset.letter===slot.dataset.placed && c.classList.contains('used')) c.classList.remove('used'); });
+  }
+
+  // Mark one matching unused chip as used
   let found = false;
   document.querySelectorAll('.wb-letter-chip').forEach(c=>{
     if(!found && c.dataset.letter===correct && !c.classList.contains('used')){
-      wbDropOnSlot(slot, c); found=true;
-      slot.classList.add('correct'); slot.classList.remove('filled');
+      c.classList.add('used');
+      found=true;
     }
   });
+
+  // Fill the slot with a proper handwriting display (same as wbDropOnSlot)
+  slot.innerHTML='';
+  const handEl = makeLetterEl(correct, '#7ac9a0', '2rem');
+  slot.appendChild(handEl);
+  slot.dataset.placed = correct;
+  slot.classList.add('correct');
+  slot.classList.remove('filled','wrong');
+  slot.style.background='rgba(122,201,160,0.12)';
 }
 
 // ── TIME ATTACK ──────────────────────────────────────────
@@ -1548,7 +1575,8 @@ function initWheel() {
 
 function drawWheel(angle) {
   const canvas = document.getElementById('wheelCanvas');
-  const size = canvas.parentElement.clientWidth || 340;
+  const container = canvas.parentElement;
+  const size = container.clientWidth || 220;
   canvas.width = size; canvas.height = size;
   const ctx = canvas.getContext('2d');
   const cx = size/2, cy = size/2, r = size/2 - 4;
