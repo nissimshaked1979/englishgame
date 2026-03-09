@@ -104,13 +104,115 @@ section.active{display:block;}
 .qm-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.38rem 0.9rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:0.76rem;letter-spacing:0.04em;text-transform:uppercase;transition:all 0.2s;}
 .qm-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
 
+/* REACTION GAME */
+#reaction-arena{position:relative;background:var(--card);border:2px solid var(--border);border-radius:20px;min-height:320px;overflow:hidden;margin-bottom:1.4rem;touch-action:none;}
+.reaction-letter{position:absolute;font-family:'Heebo',sans-serif;font-weight:900;font-size:5rem;color:var(--accent2);text-shadow:0 0 30px rgba(232,201,122,0.6);animation:letterPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275);cursor:default;user-select:none;line-height:1;transition:transform 0.1s;}
+@keyframes letterPop{from{opacity:0;transform:scale(0.3) rotate(-15deg);}to{opacity:1;transform:scale(1) rotate(0deg);}}
+.reaction-choices{display:grid;grid-template-columns:repeat(4,1fr);gap:0.7rem;}
+@media(max-width:500px){.reaction-choices{grid-template-columns:repeat(2,1fr);}}
+.react-btn{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1rem 0.5rem;cursor:pointer;font-family:'Guttman Yad-Brush',cursive;font-size:3.2rem;color:#b878f0;line-height:1;transition:all 0.15s;text-align:center;touch-action:manipulation;}
+.react-btn:hover:not(:disabled){border-color:var(--accent);transform:scale(1.06);background:rgba(184,120,240,0.1);}
+.react-btn.correct-flash{background:rgba(122,201,160,0.25);border-color:var(--success);transform:scale(1.1);}
+.react-btn.wrong-flash{background:rgba(201,122,138,0.25);border-color:#c97a8a;animation:shake 0.35s;}
+.reaction-hud{display:flex;align-items:center;gap:1.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.reaction-hud .hud-item{font-size:0.85rem;color:var(--muted);}
+.reaction-hud .hud-item span{color:var(--accent);font-weight:700;font-size:1.1rem;}
+.reaction-timer-bar{background:var(--card);border:1px solid var(--border);border-radius:100px;height:8px;margin-bottom:0.8rem;overflow:hidden;}
+.reaction-timer-fill{height:100%;background:linear-gradient(90deg,var(--success),var(--accent2),#e05060);border-radius:100px;transition:width 0.1s linear;width:100%;}
+.difficulty-badge{display:inline-block;padding:0.2rem 0.8rem;border-radius:100px;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;}
+.diff-1{background:rgba(122,201,160,0.2);color:var(--success);}
+.diff-2{background:rgba(232,201,122,0.2);color:var(--accent2);}
+.diff-3{background:rgba(184,120,240,0.2);color:var(--accent);}
+.diff-4{background:rgba(224,80,80,0.15);color:#e05060;}
+.reaction-rt{font-size:0.72rem;color:var(--muted);text-align:right;margin-top:0.3rem;}
+
+/* WORD BUILDER */
+.wb-word-display{display:flex;justify-content:center;gap:0.5rem;margin:1.2rem 0;flex-wrap:wrap;}
+.wb-slot{width:60px;height:70px;border:2px dashed var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Heebo',sans-serif;font-size:2.4rem;font-weight:700;color:var(--accent2);background:var(--card);transition:all 0.2s;position:relative;cursor:pointer;}
+.wb-slot.filled{border-style:solid;border-color:var(--accent);background:rgba(184,120,240,0.1);}
+.wb-slot.correct{border-color:var(--success);background:rgba(122,201,160,0.12);color:var(--success);}
+.wb-slot.wrong{border-color:#c97a8a;background:rgba(201,122,138,0.12);animation:shake 0.35s;}
+.wb-slot.drop-target{border-color:var(--accent2);background:rgba(232,201,122,0.12);transform:scale(1.05);}
+.wb-slot .wb-remove{position:absolute;top:-8px;right:-8px;width:18px;height:18px;background:#c97a8a;border-radius:50%;font-size:0.6rem;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity 0.2s;}
+.wb-slot.filled:hover .wb-remove{opacity:1;}
+.wb-letters-pool{display:flex;gap:0.5rem;flex-wrap:wrap;justify-content:center;margin:1rem 0;}
+.wb-letter-chip{width:58px;height:58px;border:2px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Guttman Yad-Brush',cursive;font-size:2.6rem;color:#b878f0;background:var(--surface);cursor:grab;transition:all 0.2s;user-select:none;touch-action:none;}
+.wb-letter-chip:hover:not(.used){border-color:var(--accent);transform:translateY(-3px);box-shadow:0 6px 20px rgba(184,120,240,0.3);}
+.wb-letter-chip.used{opacity:0.2;cursor:default;}
+.wb-letter-chip.dragging{opacity:0.5;transform:scale(1.1);}
+.wb-word-label{text-align:center;font-family:'Heebo',sans-serif;font-size:2rem;font-weight:700;color:var(--text);direction:rtl;margin-bottom:0.4rem;letter-spacing:0.05em;}
+.wb-word-meaning{text-align:center;font-size:0.85rem;color:var(--muted);margin-bottom:0.8rem;}
+.wb-check-row{display:flex;justify-content:center;gap:0.8rem;margin-top:1rem;}
+.wb-level-info{display:flex;align-items:center;gap:0.7rem;margin-bottom:1rem;flex-wrap:wrap;}
+.wb-hint-text{background:rgba(232,201,122,0.1);border:1px solid rgba(232,201,122,0.3);border-radius:8px;padding:0.4rem 0.8rem;font-size:0.8rem;color:var(--accent2);direction:rtl;}
+
+/* TIME ATTACK */
+.ta-big-timer{font-size:5rem;font-weight:900;font-family:'Playfair Display',serif;color:var(--accent2);text-align:center;line-height:1;margin:0.3rem 0;transition:color 0.3s;}
+.ta-big-timer.urgent{color:#e05060;animation:pulse 0.5s infinite alternate;}
+@keyframes pulse{from{transform:scale(1);}to{transform:scale(1.05);}}
+.ta-letter-display{text-align:center;margin:0.8rem 0;}
+.ta-print-letter{font-family:'Heebo',sans-serif;font-size:7rem;font-weight:900;color:var(--accent2);line-height:1;}
+.ta-hand-letter{font-family:'Guttman Yad-Brush',cursive;font-size:7rem;color:#b878f0;line-height:1;}
+.ta-choices-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem;margin-top:0.8rem;}
+@media(max-width:500px){.ta-choices-grid{grid-template-columns:repeat(2,1fr);}}
+.ta-choice-btn{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:0.9rem 0.4rem;cursor:pointer;text-align:center;transition:all 0.15s;touch-action:manipulation;}
+.ta-choice-btn:hover:not(:disabled){border-color:var(--accent);background:rgba(184,120,240,0.1);}
+.ta-choice-btn .ta-btn-hand{font-family:'Guttman Yad-Brush',cursive;font-size:2.8rem;color:#b878f0;line-height:1;}
+.ta-choice-btn .ta-btn-print{font-family:'Heebo',sans-serif;font-size:2.8rem;font-weight:700;color:var(--accent2);line-height:1;}
+.ta-choice-btn.flash-correct{background:rgba(122,201,160,0.3);border-color:var(--success);}
+.ta-choice-btn.flash-wrong{background:rgba(201,122,138,0.2);border-color:#c97a8a;}
+.ta-hud{display:flex;justify-content:space-around;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.5rem;}
+.ta-hud-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:0.5rem 1rem;text-align:center;}
+.ta-hud-box .ta-hud-val{font-size:1.8rem;font-weight:900;color:var(--accent);}
+.ta-hud-box .ta-hud-lbl{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;}
+.ta-start-screen{text-align:center;padding:2rem;}
+.ta-start-screen h2{font-family:'Playfair Display',serif;font-size:2.2rem;color:var(--accent);margin-bottom:0.5rem;}
+.ta-mode-select{display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;margin:1rem 0;}
+.ta-mode-btn{background:var(--card);border:2px solid var(--border);border-radius:12px;padding:0.8rem 1.2rem;cursor:pointer;transition:all 0.2s;text-align:center;}
+.ta-mode-btn:hover,.ta-mode-btn.active{border-color:var(--accent);background:rgba(184,120,240,0.1);}
+.ta-mode-btn .ta-mode-icon{font-size:1.8rem;display:block;margin-bottom:0.3rem;}
+.ta-mode-btn .ta-mode-name{font-size:0.8rem;font-weight:700;color:var(--text);}
+/* Leaderboard */
+.leaderboard{max-width:400px;margin:0 auto;}
+.lb-title{font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--accent);text-align:center;margin-bottom:0.8rem;}
+.lb-row{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.8rem;border-radius:10px;margin-bottom:0.3rem;}
+.lb-row:nth-child(1){background:rgba(232,201,122,0.15);border:1px solid rgba(232,201,122,0.3);}
+.lb-row:nth-child(2){background:rgba(200,200,200,0.08);border:1px solid rgba(200,200,200,0.15);}
+.lb-row:nth-child(3){background:rgba(200,140,80,0.1);border:1px solid rgba(200,140,80,0.2);}
+.lb-row:nth-child(n+4){background:var(--card);border:1px solid var(--border);}
+.lb-rank{font-size:1.1rem;width:24px;text-align:center;}
+.lb-score{font-size:1.2rem;font-weight:700;color:var(--accent);margin-left:auto;}
+.lb-mode{font-size:0.65rem;color:var(--muted);text-align:right;}
+.lb-empty{text-align:center;color:var(--muted);font-size:0.85rem;padding:1.5rem 0;}
+
 /* LETTER SET TOGGLE */
 .set-toggle{display:flex;justify-content:center;gap:0.5rem;margin:1rem 0;flex-wrap:wrap;}
 .set-btn{background:transparent;border:1px solid var(--border);color:var(--muted);padding:0.45rem 1.1rem;border-radius:100px;cursor:pointer;font-family:'Heebo',sans-serif;font-size:0.82rem;letter-spacing:0.04em;transition:all 0.2s;}
 .set-btn:hover{border-color:var(--accent);color:var(--text);}
 .set-btn.active{background:var(--accent);border-color:var(--accent);color:#0d0d0d;font-weight:700;}
 
-/* SNAKE */
+/* SPIN WHEEL */
+.wheel-wrap{display:flex;flex-direction:column;align-items:center;gap:1.2rem;}
+.wheel-container{position:relative;width:min(360px,90vw);height:min(360px,90vw);}
+#wheelCanvas{border-radius:50%;box-shadow:0 0 40px rgba(184,120,240,0.35),0 0 80px rgba(184,120,240,0.12);display:block;}
+.wheel-pointer{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:32px solid var(--accent2);filter:drop-shadow(0 2px 6px rgba(0,0,0,0.5));z-index:10;}
+.wheel-spin-btn{font-size:1.1rem;padding:0.85rem 3rem;border-radius:100px;background:linear-gradient(135deg,var(--accent),#7040c0);border:none;color:#fff;font-family:'Heebo',sans-serif;font-weight:700;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 20px rgba(184,120,240,0.4);}
+.wheel-spin-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 28px rgba(184,120,240,0.55);}
+.wheel-spin-btn:disabled{opacity:0.5;cursor:default;}
+.wheel-result{text-align:center;min-height:180px;}
+.wheel-result-letter{font-family:'Heebo',sans-serif;font-size:5rem;font-weight:900;color:var(--accent2);animation:popIn 0.4s cubic-bezier(0.175,0.885,0.32,1.275);}
+@keyframes popIn{from{opacity:0;transform:scale(0.3);}to{opacity:1;transform:scale(1);}}
+.wheel-question{font-size:1rem;color:var(--muted);margin:0.3rem 0 0.8rem;}
+.wheel-choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem;max-width:420px;width:100%;}
+.wheel-choice-btn{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:1rem 0.5rem;cursor:pointer;font-family:'Guttman Yad-Brush',cursive;font-size:3rem;color:#b878f0;line-height:1.1;transition:all 0.15s;text-align:center;touch-action:manipulation;}
+.wheel-choice-btn .wc-name{font-family:'Heebo',sans-serif;font-size:0.72rem;color:var(--muted);display:block;margin-top:0.2rem;}
+.wheel-choice-btn:hover:not(:disabled){border-color:var(--accent);transform:translateY(-3px);background:rgba(184,120,240,0.08);}
+.wheel-choice-btn.correct{background:rgba(122,201,160,0.2);border-color:var(--success);color:var(--success);}
+.wheel-choice-btn.wrong{background:rgba(201,122,138,0.15);border-color:#c97a8a;animation:shake 0.35s;}
+.wheel-hud{display:flex;gap:1.5rem;align-items:center;font-size:0.9rem;color:var(--muted);}
+.wheel-hud span{color:var(--accent);font-weight:700;font-size:1.1rem;}
+.wheel-feedback{font-size:1.1rem;min-height:1.4rem;text-align:center;margin-top:0.2rem;}
+
 #snakeStatus{font-size:1rem;color:var(--muted);margin-bottom:0.5rem;text-align:center;}
 #snakeCanvas{display:block;margin:0 auto;border:2px solid var(--accent);border-radius:12px;background:#0a0a14;max-width:100%;}
 .snake-hint{text-align:center;margin-top:0.6rem;font-size:0.78rem;color:var(--muted);}
@@ -136,6 +238,10 @@ section.active{display:block;}
   <button class="tab active" onclick="showTab('letters',this)">אלף בית</button>
   <button class="tab" onclick="showTab('memory',this)">🃏 זיכרון</button>
   <button class="tab" onclick="showTab('match',this)">🔗 התאמה</button>
+  <button class="tab" onclick="showTab('reaction',this)">⚡ תפוס את האות</button>
+  <button class="tab" onclick="showTab('wordbuilder',this)">🔤 בניית מילה</button>
+  <button class="tab" onclick="showTab('timeattack',this)">⏱️ אתגר מהירות</button>
+  <button class="tab" onclick="showTab('wheel',this)">🎡 גלגל</button>
   <button class="tab" onclick="showTab('snake',this)">🐍 נחש</button>
 </div>
 <section id="letters" class="active">
@@ -187,6 +293,103 @@ section.active{display:block;}
   <div class="answer-grid" id="answerGrid"></div>
   <div class="submit-row"><button class="submit-btn" onclick="submitAnswers()"> שלחו תשובה✓</button></div>
 </section>
+<!-- REACTION GAME -->
+<section id="reaction">
+  <div class="reaction-hud">
+    <div class="hud-item">ניקוד: <span id="react-score">0</span></div>
+    <div class="hud-item">רצף: <span id="react-streak">0</span></div>
+    <div class="hud-item">רמה: <span id="react-level-badge" class="difficulty-badge diff-1">1 — קל</span></div>
+    <div class="hud-item" style="margin-right:auto">זמן תגובה: <span id="react-rt">—</span> ms</div>
+    <button class="btn" onclick="startReaction()">↺ משחק חדש</button>
+  </div>
+  <div class="reaction-timer-bar"><div class="reaction-timer-fill" id="react-timer-fill"></div></div>
+  <div id="reaction-arena">
+    <div id="react-letter-display" style="display:flex;align-items:center;justify-content:center;height:280px;font-family:'Heebo',sans-serif;font-weight:900;font-size:8rem;color:var(--accent2);"></div>
+  </div>
+  <div class="reaction-choices" id="react-choices"></div>
+  <div class="reaction-rt" id="react-rt-display"></div>
+</section>
+
+<!-- WORD BUILDER -->
+<section id="wordbuilder">
+  <div class="game-controls">
+    <button class="btn" onclick="nextWBWord()">⟳ מילה הבאה</button>
+    <button class="btn" onclick="initWordBuilder()">↺ משחק חדש</button>
+    <div class="score-badge">ניקוד: <span id="wb-score">0</span></div>
+  </div>
+  <div class="wb-level-info">
+    <span class="difficulty-badge diff-1" id="wb-level-badge">רמה 1</span>
+    <div class="wb-hint-text" id="wb-hint">💡 גרור כל אות כתב יד למקום הנכון</div>
+  </div>
+  <div class="wb-word-label" id="wb-word-label"></div>
+  <div class="wb-word-meaning" id="wb-word-meaning"></div>
+  <div class="wb-word-display" id="wb-slots"></div>
+  <div class="wb-letters-pool" id="wb-pool"></div>
+  <div class="wb-check-row">
+    <button class="btn" onclick="checkWBWord()">✓ בדוק</button>
+    <button class="btn" onclick="wbHint()">💡 רמז</button>
+  </div>
+</section>
+
+<!-- TIME ATTACK -->
+<section id="timeattack">
+  <div id="ta-start-screen" class="ta-start-screen">
+    <h2>⏱️ אתגר מהירות</h2>
+    <p style="color:var(--muted);margin-bottom:1rem;">כמה אותיות נכונות בעוד 30 שניות?</p>
+    <div class="ta-mode-select">
+      <div class="ta-mode-btn active" id="ta-mode-ph" onclick="setTAMode('print-to-hand')">
+        <span class="ta-mode-icon">🖨️→✍️</span>
+        <span class="ta-mode-name">דפוס → כתב</span>
+      </div>
+      <div class="ta-mode-btn" id="ta-mode-hp" onclick="setTAMode('hand-to-print')">
+        <span class="ta-mode-icon">✍️→🖨️</span>
+        <span class="ta-mode-name">כתב → דפוס</span>
+      </div>
+    </div>
+    <button class="btn" onclick="startTimeAttack()" style="font-size:1.1rem;padding:0.8rem 2.5rem;margin-top:0.5rem;">▶ התחל</button>
+    <div id="ta-leaderboard-wrap" style="margin-top:1.8rem;"></div>
+  </div>
+  <div id="ta-game-screen" style="display:none;">
+    <div class="ta-hud">
+      <div class="ta-hud-box"><div class="ta-hud-val" id="ta-score-val">0</div><div class="ta-hud-lbl">ניקוד</div></div>
+      <div class="ta-hud-box"><div class="ta-big-timer" id="ta-timer">30</div><div class="ta-hud-lbl">שניות</div></div>
+      <div class="ta-hud-box"><div class="ta-hud-val" id="ta-streak-val">0</div><div class="ta-hud-lbl">רצף</div></div>
+    </div>
+    <div class="ta-letter-display" id="ta-letter-display"></div>
+    <div class="ta-choices-grid" id="ta-choices"></div>
+  </div>
+  <div id="ta-end-screen" style="display:none;text-align:center;padding:1.5rem;">
+    <div style="font-size:3rem;margin-bottom:0.5rem;">🏆</div>
+    <div style="font-family:'Playfair Display',serif;font-size:2.5rem;color:var(--accent2);" id="ta-final-score">0</div>
+    <div style="color:var(--muted);margin-bottom:1rem;">נקודות ב-30 שניות</div>
+    <div id="ta-new-record" style="display:none;background:rgba(232,201,122,0.2);border:1px solid rgba(232,201,122,0.4);border-radius:12px;padding:0.5rem 1.2rem;margin-bottom:1rem;color:var(--accent2);font-weight:700;">🎉 שיא חדש!</div>
+    <div style="display:flex;gap:0.8rem;justify-content:center;">
+      <button class="btn success" onclick="startTimeAttack()">▶ שחק שוב</button>
+      <button class="btn" onclick="showTAStart()">📊 טבלת שיאים</button>
+    </div>
+    <div id="ta-end-leaderboard" style="margin-top:1.5rem;"></div>
+  </div>
+</section>
+
+<!-- SPIN WHEEL -->
+<section id="wheel">
+  <div class="wheel-hud" style="justify-content:center;margin-bottom:0.8rem;">
+    <div>ניקוד: <span id="wheel-score">0</span></div>
+    <div>רצף: <span id="wheel-streak">0</span></div>
+    <button class="btn" onclick="initWheel()" style="margin-right:auto">↺ אפס</button>
+  </div>
+  <div class="wheel-wrap">
+    <div class="wheel-container">
+      <div class="wheel-pointer"></div>
+      <canvas id="wheelCanvas"></canvas>
+    </div>
+    <button class="wheel-spin-btn" id="wheelSpinBtn" onclick="spinWheel()">🎡 סובב!</button>
+    <div class="wheel-result" id="wheel-result">
+      <div style="color:var(--muted);font-size:0.9rem;padding-top:2rem;">סובב את הגלגל כדי לקבל אות!</div>
+    </div>
+  </div>
+</section>
+
 <section id="snake">
   <div class="game-controls">
     <button class="btn" onclick="startSnake()">↺ משחק חדש</button>
@@ -768,7 +971,14 @@ function showTab(name,el){
   if(name==='match')initMatch();
   if(name==='quiz')startQuiz();
   if(name==='snake')startSnake();
+  if(name==='reaction')startReaction();
+  if(name==='wordbuilder')initWordBuilder();
+  if(name==='timeattack')showTAStart();
+  if(name==='wheel'){initWheel();}
   if(name!=='snake')stopSnake();
+  if(name!=='reaction'){clearTimeout(reactTimeout);clearInterval(reactTimer);}
+  if(name!=='timeattack'){clearInterval(taInterval);}
+  if(name!=='wheel'&&wheelAnimId){cancelAnimationFrame(wheelAnimId);wheelSpinning=false;}
 }
 
 let toastT;
@@ -788,8 +998,650 @@ function showWin(game){
   document.getElementById('winBtn').onclick=()=>{ov.classList.remove('show');game==='memory'?initMemory():initMatch();};
 }
 
+// ── REACTION GAME ────────────────────────────────────────
+let reactScore=0, reactStreak=0, reactLevel=1, reactTimer=null, reactTimeout=null;
+let reactStart=0, reactActive=false, reactCurrent=null;
+const REACT_LEVELS = [
+  {time:4000, letters:4, label:'1 — קל',    cls:'diff-1'},
+  {time:3000, letters:6, label:'2 — בינוני', cls:'diff-2'},
+  {time:2000, letters:8, label:'3 — קשה',   cls:'diff-3'},
+  {time:1200, letters:11,label:'4 — מהיר!', cls:'diff-4'},
+];
+
+function startReaction() {
+  reactScore=0; reactStreak=0; reactLevel=1; reactActive=false;
+  clearTimeout(reactTimeout); clearInterval(reactTimer);
+  document.getElementById('react-score').textContent=0;
+  document.getElementById('react-streak').textContent=0;
+  document.getElementById('react-rt').textContent='—';
+  document.getElementById('react-rt-display').textContent='';
+  setReactLevel();
+  nextReaction();
+}
+
+function setReactLevel() {
+  const lvl = REACT_LEVELS[Math.min(reactLevel-1, REACT_LEVELS.length-1)];
+  const badge = document.getElementById('react-level-badge');
+  badge.textContent = lvl.label;
+  badge.className = 'difficulty-badge ' + lvl.cls;
+}
+
+function nextReaction() {
+  reactActive = false;
+  clearTimeout(reactTimeout);
+  const arena = document.getElementById('react-letter-display');
+  arena.innerHTML = '<span style="color:var(--muted);font-size:1rem;font-family:Heebo,sans-serif;">מתכונן...</span>';
+  document.getElementById('react-choices').innerHTML = '';
+  document.getElementById('react-timer-fill').style.width = '100%';
+
+  const delay = 600 + Math.random() * 800;
+  setTimeout(() => {
+    const lvl = REACT_LEVELS[Math.min(reactLevel-1, REACT_LEVELS.length-1)];
+    const pool = [...AB].sort(() => Math.random()-0.5).slice(0, Math.min(lvl.letters, AB.length));
+    reactCurrent = pool[Math.floor(Math.random()*pool.length)];
+
+    // Show print letter in arena
+    arena.innerHTML = '';
+    const el = document.createElement('div');
+    el.style.cssText = 'font-family:Heebo,sans-serif;font-weight:900;font-size:7rem;color:var(--accent2);line-height:1;';
+    el.textContent = reactCurrent.p;
+    arena.appendChild(el);
+
+    // Build choices: correct hand + 3 wrong
+    const wrong = AB.filter(l=>l.p!==reactCurrent.p).sort(()=>Math.random()-0.5).slice(0,3);
+    const opts = [...wrong, reactCurrent].sort(()=>Math.random()-0.5);
+
+    const choicesEl = document.getElementById('react-choices');
+    choicesEl.innerHTML = '';
+    opts.forEach(l => {
+      const btn = document.createElement('button');
+      btn.className = 'react-btn';
+      btn.textContent = l.p;
+      btn.style.fontFamily = "'Guttman Yad-Brush', cursive";
+      btn.onclick = () => handleReactChoice(btn, l.p === reactCurrent.p);
+      choicesEl.appendChild(btn);
+    });
+
+    reactStart = performance.now();
+    reactActive = true;
+
+    // Timer bar animation
+    const fillEl = document.getElementById('react-timer-fill');
+    fillEl.style.transition = 'none';
+    fillEl.style.width = '100%';
+    requestAnimationFrame(() => {
+      fillEl.style.transition = `width ${lvl.time}ms linear`;
+      fillEl.style.width = '0%';
+    });
+
+    reactTimeout = setTimeout(() => {
+      if (!reactActive) return;
+      reactActive = false;
+      reactStreak = 0;
+      document.getElementById('react-streak').textContent = 0;
+      arena.innerHTML = '<span style="color:#c97a8a;font-size:1.5rem;font-family:Heebo,sans-serif;">⏰ הזמן פג!</span>';
+      document.querySelectorAll('.react-btn').forEach(b=>b.disabled=true);
+      // show correct answer
+      document.querySelectorAll('.react-btn').forEach(b => {
+        if(b.textContent === reactCurrent.p) b.classList.add('correct-flash');
+      });
+      if(reactLevel>1) reactLevel = Math.max(1, reactLevel-1);
+      setReactLevel();
+      setTimeout(nextReaction, 1200);
+    }, lvl.time);
+  }, delay);
+}
+
+function handleReactChoice(btn, correct) {
+  if(!reactActive) return;
+  reactActive = false;
+  clearTimeout(reactTimeout);
+  const rt = Math.round(performance.now() - reactStart);
+  document.getElementById('react-rt').textContent = rt;
+  document.getElementById('react-rt-display').textContent = `⏱ זמן תגובה: ${rt} ms`;
+  document.querySelectorAll('.react-btn').forEach(b=>b.disabled=true);
+
+  if(correct) {
+    btn.classList.add('correct-flash');
+    reactScore += Math.max(1, Math.round((3000-rt)/100));
+    reactStreak++;
+    document.getElementById('react-score').textContent = reactScore;
+    document.getElementById('react-streak').textContent = reactStreak;
+    speakName(reactCurrent.name);
+    if(reactStreak>0 && reactStreak%3===0) {
+      reactLevel = Math.min(REACT_LEVELS.length, reactLevel+1);
+      setReactLevel();
+    }
+    setTimeout(nextReaction, 900);
+  } else {
+    btn.classList.add('wrong-flash');
+    document.querySelectorAll('.react-btn').forEach(b => {
+      if(b.textContent===reactCurrent.p) b.classList.add('correct-flash');
+    });
+    reactStreak = 0;
+    document.getElementById('react-streak').textContent = 0;
+    if(reactLevel>1) reactLevel = Math.max(1, reactLevel-1);
+    setReactLevel();
+    setTimeout(nextReaction, 1100);
+  }
+}
+
+// ── WORD BUILDER ─────────────────────────────────────────
+const WB_WORDS = [
+  // Level 1: 3 letters, all different
+  {word:'שלום',meaning:'שלום — Hello',level:1},
+  {word:'ילד',meaning:'ילד — Boy',level:1},
+  {word:'ספר',meaning:'ספר — Book',level:1},
+  {word:'כלב',meaning:'כלב — Dog',level:1},
+  {word:'גדול',meaning:'גדול — Big',level:1},
+  // Level 2: 4-5 letters
+  {word:'בית',meaning:'בית — House',level:2},
+  {word:'ארץ',meaning:'ארץ — Land',level:2},
+  {word:'מים',meaning:'מים — Water',level:2},
+  {word:'אור',meaning:'אור — Light',level:2},
+  {word:'שמש',meaning:'שמש — Sun',level:2},
+  // Level 3: 5+ letters with endings
+  {word:'שמים',meaning:'שמים — Sky',level:3},
+  {word:'ילדים',meaning:'ילדים — Children',level:3},
+  {word:'ספרים',meaning:'ספרים — Books',level:3},
+  {word:'בתים',meaning:'בתים — Houses',level:3},
+  {word:'לבן',meaning:'לבן — White',level:3},
+  {word:'ירוק',meaning:'ירוק — Green',level:3},
+  {word:'שרפרף',meaning:'שרפרף — Stool',level:3},
+  {word:'שולחן',meaning:'שולחן — Table',level:3},
+  {word:'קיץ',meaning:'קיץ — Summer',level:3},
+  {word:'חלון',meaning:'חלון — Window',level:3},
+  {word:'כריך',meaning:'כריך — Sandwich',level:3}
+];
+let wbScore=0, wbCurrentWord=null, wbDragging=null, wbTouchChip=null;
+
+function initWordBuilder() {
+  wbScore=0;
+  document.getElementById('wb-score').textContent=0;
+  nextWBWord();
+}
+
+function nextWBWord() {
+  const pool = WB_WORDS.filter(w=>!wbCurrentWord||w.word!==wbCurrentWord.word);
+  wbCurrentWord = pool[Math.floor(Math.random()*pool.length)];
+  const lvl = wbCurrentWord.level;
+  const badge = document.getElementById('wb-level-badge');
+  badge.textContent = `רמה ${lvl}`;
+  badge.className = 'difficulty-badge diff-' + lvl;
+  document.getElementById('wb-word-label').textContent = wbCurrentWord.word;
+  document.getElementById('wb-word-meaning').textContent = wbCurrentWord.meaning;
+
+  const hints = ['💡 גרור כל אות כתב יד למקום הנכון','💡 הקש על אות ואז על המקום','💡 גרור לפי סדר מימין לשמאל'];
+  document.getElementById('wb-hint').textContent = hints[lvl-1]||hints[0];
+
+  buildWBSlots();
+  buildWBPool();
+}
+
+function buildWBSlots() {
+  const slots = document.getElementById('wb-slots');
+  slots.innerHTML = '';
+  [...wbCurrentWord.word].forEach((ch, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'wb-slot';
+    slot.dataset.idx = i;
+    slot.dataset.correct = ch;
+    slot.addEventListener('dragover', e=>{e.preventDefault();slot.classList.add('drop-target');});
+    slot.addEventListener('dragleave', ()=>slot.classList.remove('drop-target'));
+    slot.addEventListener('drop', e=>{e.preventDefault();slot.classList.remove('drop-target');wbDropOnSlot(slot);});
+    slot.addEventListener('click', ()=>wbClickSlot(slot));
+    slots.appendChild(slot);
+  });
+}
+
+function buildWBPool() {
+  const pool = document.getElementById('wb-pool');
+  pool.innerHTML = '';
+  // Create shuffled chips
+  const letters = [...wbCurrentWord.word].sort(()=>Math.random()-0.5);
+  letters.forEach((ch, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'wb-letter-chip';
+    chip.dataset.letter = ch;
+    chip.id = 'wbc-' + i;
+    chip.textContent = ch;
+    chip.draggable = true;
+    chip.addEventListener('dragstart', e=>{wbDragging=chip;chip.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    chip.addEventListener('dragend', ()=>{chip.classList.remove('dragging');wbDragging=null;});
+    chip.addEventListener('click', ()=>wbClickChip(chip));
+    // Touch drag
+    chip.addEventListener('touchstart', e=>{wbTouchChip=chip;chip.classList.add('dragging');},{passive:true});
+    chip.addEventListener('touchend', e=>{
+      if(!wbTouchChip) return;
+      chip.classList.remove('dragging');
+      const touch = e.changedTouches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const slot = el && el.closest('.wb-slot');
+      if(slot) wbDropOnSlot(slot, chip);
+      wbTouchChip = null;
+    },{passive:true});
+    pool.appendChild(chip);
+  });
+}
+
+let wbSelectedChip = null;
+
+function wbClickChip(chip) {
+  if(chip.classList.contains('used')) return;
+  document.querySelectorAll('.wb-letter-chip').forEach(c=>c.style.boxShadow='');
+  if(wbSelectedChip===chip){wbSelectedChip=null;return;}
+  wbSelectedChip = chip;
+  chip.style.boxShadow = '0 0 0 3px var(--accent)';
+}
+
+function wbClickSlot(slot) {
+  if(slot.classList.contains('correct')) return;
+  if(slot.classList.contains('filled')) {
+    // Return chip to pool
+    const letter = slot.dataset.placed;
+    slot.innerHTML=''; slot.classList.remove('filled','wrong');
+    delete slot.dataset.placed;
+    // Re-enable chip
+    document.querySelectorAll('.wb-letter-chip').forEach(c=>{
+      if(c.dataset.letter===letter&&c.classList.contains('used')){c.classList.remove('used');return;}
+    });
+    return;
+  }
+  if(wbSelectedChip) {
+    wbDropOnSlot(slot, wbSelectedChip);
+    wbSelectedChip.style.boxShadow='';
+    wbSelectedChip=null;
+  }
+}
+
+function wbDropOnSlot(slot, chip) {
+  const src = chip || wbDragging;
+  if(!src||src.classList.contains('used')) return;
+  if(slot.classList.contains('correct')) return;
+  if(slot.classList.contains('filled')) {
+    const old = slot.dataset.placed;
+    document.querySelectorAll('.wb-letter-chip').forEach(c=>{if(c.dataset.letter===old&&c.classList.contains('used')){c.classList.remove('used');}});
+  }
+  src.classList.add('used');
+  slot.textContent = src.dataset.letter;
+  slot.classList.add('filled');
+  slot.classList.remove('wrong');
+  slot.dataset.placed = src.dataset.letter;
+}
+
+function checkWBWord() {
+  const slots = document.querySelectorAll('.wb-slot');
+  let allFilled = true;
+  const placed = [];
+  slots.forEach(slot => {
+    if(!slot.dataset.placed){allFilled=false;}
+    else placed.push(slot.dataset.placed);
+  });
+  if(!allFilled){showToast('מלא את כל המקומות!');return;}
+  // Compare multisets — order doesn't matter, just the right letters
+  const expected = [...wbCurrentWord.word].sort();
+  const actual = [...placed].sort();
+  const allCorrect = expected.join('') === actual.join('');
+  if(allCorrect){
+    slots.forEach(slot=>slot.classList.add('correct'));
+    wbScore++;
+    document.getElementById('wb-score').textContent=wbScore;
+    showToast('🎉 נכון מאוד!',true);
+    speakName(wbCurrentWord.meaning.split('—')[1]?.trim()||'');
+    setTimeout(nextWBWord,1200);
+  } else {
+    slots.forEach(slot=>{slot.classList.add('wrong');setTimeout(()=>slot.classList.remove('wrong'),500);});
+    showToast('❌ יש שגיאות — נסה שוב!');
+  }
+}
+function wbHint() {
+  // Reveal one random unfilled/wrong slot
+  const slots = [...document.querySelectorAll('.wb-slot:not(.correct)')];
+  if(!slots.length) return;
+  const slot = slots[Math.floor(Math.random()*slots.length)];
+  const correct = slot.dataset.correct;
+  // find unused chip with that letter
+  let found = false;
+  document.querySelectorAll('.wb-letter-chip').forEach(c=>{
+    if(!found && c.dataset.letter===correct && !c.classList.contains('used')){
+      wbDropOnSlot(slot, c); found=true;
+      slot.classList.add('correct'); slot.classList.remove('filled');
+    }
+  });
+}
+
+// ── TIME ATTACK ──────────────────────────────────────────
+let taMode='print-to-hand', taScore=0, taStreak=0, taTimerVal=30;
+let taInterval=null, taCurrent=null, taActive=false;
+const TA_DURATION = 30;
+
+function setTAMode(mode) {
+  taMode=mode;
+  document.getElementById('ta-mode-ph').classList.toggle('active',mode==='print-to-hand');
+  document.getElementById('ta-mode-hp').classList.toggle('active',mode==='hand-to-print');
+}
+
+function showTAStart() {
+  document.getElementById('ta-start-screen').style.display='block';
+  document.getElementById('ta-game-screen').style.display='none';
+  document.getElementById('ta-end-screen').style.display='none';
+  renderTALeaderboard('ta-leaderboard-wrap');
+}
+
+function startTimeAttack() {
+  taScore=0; taStreak=0; taTimerVal=TA_DURATION; taActive=true;
+  clearInterval(taInterval);
+  document.getElementById('ta-score-val').textContent=0;
+  document.getElementById('ta-streak-val').textContent=0;
+  document.getElementById('ta-start-screen').style.display='none';
+  document.getElementById('ta-end-screen').style.display='none';
+  document.getElementById('ta-game-screen').style.display='block';
+  updateTATimer();
+  nextTAQuestion();
+  taInterval = setInterval(()=>{
+    taTimerVal--;
+    updateTATimer();
+    if(taTimerVal<=0){
+      clearInterval(taInterval);
+      taActive=false;
+      endTimeAttack();
+    }
+  },1000);
+}
+
+function updateTATimer() {
+  const el = document.getElementById('ta-timer');
+  el.textContent = taTimerVal;
+  el.classList.toggle('urgent', taTimerVal<=5);
+}
+
+function nextTAQuestion() {
+  taCurrent = AB[Math.floor(Math.random()*AB.length)];
+  const disp = document.getElementById('ta-letter-display');
+  disp.innerHTML='';
+  if(taMode==='print-to-hand') {
+    const el=document.createElement('div');
+    el.className='ta-print-letter';
+    el.textContent=taCurrent.p;
+    disp.appendChild(el);
+  } else {
+    const el=document.createElement('div');
+    el.className='ta-hand-letter';
+    el.textContent=taCurrent.p;
+    disp.appendChild(el);
+  }
+  // 4 choices
+  const wrong = AB.filter(l=>l.p!==taCurrent.p).sort(()=>Math.random()-0.5).slice(0,3);
+  const opts = [...wrong,taCurrent].sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('ta-choices');
+  grid.innerHTML='';
+  opts.forEach(l=>{
+    const btn=document.createElement('div');
+    btn.className='ta-choice-btn';
+    btn.innerHTML=taMode==='print-to-hand'
+      ? `<div class="ta-btn-hand">${l.p}</div>`
+      : `<div class="ta-btn-print">${l.p}</div>`;
+    btn.addEventListener('click',()=>handleTAChoice(btn,l.p===taCurrent.p));
+    grid.appendChild(btn);
+  });
+}
+
+function handleTAChoice(btn, correct) {
+  if(!taActive) return;
+  document.querySelectorAll('.ta-choice-btn').forEach(b=>b.style.pointerEvents='none');
+  if(correct){
+    btn.classList.add('flash-correct');
+    taScore++;taStreak++;
+    document.getElementById('ta-score-val').textContent=taScore;
+    document.getElementById('ta-streak-val').textContent=taStreak;
+    speakName(taCurrent.name);
+    setTimeout(()=>{btn.classList.remove('flash-correct');if(taActive)nextTAQuestion();},300);
+  } else {
+    btn.classList.add('flash-wrong');
+    taStreak=0;
+    document.getElementById('ta-streak-val').textContent=0;
+    // show correct
+    document.querySelectorAll('.ta-choice-btn').forEach(b=>{
+      const inner=b.querySelector('.ta-btn-hand,.ta-btn-print');
+      if(inner&&inner.textContent===taCurrent.p) b.classList.add('flash-correct');
+    });
+    setTimeout(()=>{
+      document.querySelectorAll('.ta-choice-btn').forEach(b=>{b.classList.remove('flash-correct','flash-wrong');});
+      if(taActive)nextTAQuestion();
+    },600);
+  }
+}
+
+function endTimeAttack() {
+  document.getElementById('ta-game-screen').style.display='none';
+  document.getElementById('ta-end-screen').style.display='block';
+  document.getElementById('ta-final-score').textContent=taScore;
+  const isNew = saveTAScore(taScore, taMode);
+  document.getElementById('ta-new-record').style.display=isNew?'block':'none';
+  renderTALeaderboard('ta-end-leaderboard');
+}
+
+// localStorage leaderboard
+function getTAScores() {
+  try{return JSON.parse(localStorage.getItem('ta_scores')||'[]');}catch(e){return [];}
+}
+function saveTAScore(score, mode) {
+  const scores = getTAScores();
+  const modeScores = scores.filter(s=>s.mode===mode).sort((a,b)=>b.score-a.score);
+  const isNew = !modeScores.length || score > modeScores[0].score;
+  scores.push({score, mode, date: new Date().toLocaleDateString('he-IL')});
+  scores.sort((a,b)=>b.score-a.score);
+  try{localStorage.setItem('ta_scores', JSON.stringify(scores.slice(0,20)));}catch(e){}
+  return isNew;
+}
+
+function renderTALeaderboard(targetId) {
+  const el=document.getElementById(targetId);
+  if(!el) return;
+  const scores=getTAScores().sort((a,b)=>b.score-a.score).slice(0,5);
+  const modeNames={'print-to-hand':'דפוס→כתב','hand-to-print':'כתב→דפוס'};
+  el.innerHTML=`<div class="leaderboard"><div class="lb-title">🏆 טבלת שיאים</div>${
+    scores.length?scores.map((s,i)=>`<div class="lb-row">
+      <span class="lb-rank">${['🥇','🥈','🥉','4.','5.'][i]||''}</span>
+      <span>${s.date||''}</span>
+      <span class="lb-mode">${modeNames[s.mode]||s.mode}</span>
+      <span class="lb-score">${s.score}</span>
+    </div>`).join(''):
+    '<div class="lb-empty">עדיין אין שיאים — שחק כדי להופיע כאן! 🎮</div>'
+  }</div>`;
+}
+
+// ── SPIN WHEEL ────────────────────────────────────────────
+const WHEEL_COLORS = [
+  '#b878f0','#e8c97a','#7ac9a0','#50c8f0','#f06858',
+  '#e850a0','#98d848','#f0a030','#78b8f0','#40d8c0',
+  '#f0c080','#e05060'
+];
+let wheelSpinning = false, wheelScore = 0, wheelStreak = 0;
+let wheelAngle = 0, wheelTarget = 0, wheelAnimId = null;
+let wheelLandedLetter = null;
+
+function initWheel() {
+  wheelScore = 0; wheelStreak = 0; wheelLandedLetter = null;
+  document.getElementById('wheel-score').textContent = 0;
+  document.getElementById('wheel-streak').textContent = 0;
+  document.getElementById('wheel-result').innerHTML = '<div style="color:var(--muted);font-size:0.9rem;padding-top:2rem;">סובב את הגלגל כדי לקבל אות!</div>';
+  document.getElementById('wheelSpinBtn').disabled = false;
+  drawWheel(0);
+}
+
+function drawWheel(angle) {
+  const canvas = document.getElementById('wheelCanvas');
+  const size = canvas.parentElement.clientWidth || 340;
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const cx = size/2, cy = size/2, r = size/2 - 4;
+  const letters = AB;
+  const n = letters.length;
+  const arc = (2 * Math.PI) / n;
+
+  ctx.clearRect(0, 0, size, size);
+
+  letters.forEach((l, i) => {
+    const startAngle = angle + i * arc;
+    const endAngle = startAngle + arc;
+    const mid = startAngle + arc / 2;
+
+    // Slice
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = WHEEL_COLORS[i % WHEEL_COLORS.length];
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Letter text
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(mid);
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(0,0,0,0.85)';
+    ctx.font = `bold ${Math.max(14, size*0.065)}px Heebo, sans-serif`;
+    ctx.fillText(l.p, r * 0.78, 0);
+    ctx.restore();
+  });
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, size * 0.09, 0, 2*Math.PI);
+  ctx.fillStyle = '#141414';
+  ctx.fill();
+  ctx.strokeStyle = 'var(--accent)';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Center star
+  ctx.fillStyle = '#b878f0';
+  ctx.font = `bold ${size*0.07}px serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('✦', cx, cy);
+}
+
+function spinWheel() {
+  if (wheelSpinning) return;
+  // Clear previous result
+  document.getElementById('wheel-result').innerHTML = '';
+  document.getElementById('wheelSpinBtn').disabled = true;
+  wheelSpinning = true;
+
+  const letters = AB;
+  const n = letters.length;
+  const arc = (2 * Math.PI) / n;
+
+  // Pick a random target letter
+  const targetIdx = Math.floor(Math.random() * n);
+  // Spin 5–8 full rotations plus land on targetIdx
+  const spins = 5 + Math.random() * 3;
+  // Pointer is at top (−π/2). We want slice targetIdx centered under pointer.
+  // Slice center angle (from angle=0) = targetIdx * arc + arc/2
+  // We need: wheelAngle + targetIdx * arc + arc/2 ≡ -π/2 + 2πk
+  // So total rotation = -π/2 - arc/2 - targetIdx*arc - wheelAngle + 2π*(spins+k)
+  const sliceCenter = targetIdx * arc + arc / 2;
+  const needed = (-Math.PI/2 - sliceCenter - (wheelAngle % (2*Math.PI)) + 2*Math.PI * Math.ceil(spins)) % (2*Math.PI);
+  wheelTarget = wheelAngle + 2*Math.PI * Math.floor(spins) + needed;
+
+  const duration = 3500 + Math.random() * 1200;
+  const startAngle = wheelAngle;
+  const startTime = performance.now();
+
+  function easeOut(t) {
+    return 1 - Math.pow(1 - t, 4);
+  }
+
+  function animate(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    wheelAngle = startAngle + (wheelTarget - startAngle) * easeOut(t);
+    drawWheel(wheelAngle);
+    if (t < 1) {
+      wheelAnimId = requestAnimationFrame(animate);
+    } else {
+      wheelAngle = wheelTarget;
+      wheelSpinning = false;
+      wheelLandedLetter = letters[targetIdx];
+      showWheelQuestion(wheelLandedLetter);
+    }
+  }
+  wheelAnimId = requestAnimationFrame(animate);
+}
+
+function showWheelQuestion(letter) {
+  speakName(letter.name);
+  // 4 choices: the correct hand-letter name + 3 wrong
+  const wrong = AB.filter(l => l.p !== letter.p).sort(() => Math.random()-0.5).slice(0, 3);
+  const opts = [...wrong, letter].sort(() => Math.random()-0.5);
+
+  const resultEl = document.getElementById('wheel-result');
+  resultEl.innerHTML = '';
+
+  // Show landed print letter
+  const letterEl = document.createElement('div');
+  letterEl.className = 'wheel-result-letter';
+  letterEl.textContent = letter.p;
+  resultEl.appendChild(letterEl);
+
+  const q = document.createElement('div');
+  q.className = 'wheel-question';
+  q.textContent = 'מהי אות כתב היד המתאימה?';
+  resultEl.appendChild(q);
+
+  const feedback = document.createElement('div');
+  feedback.className = 'wheel-feedback';
+  resultEl.appendChild(feedback);
+
+  const grid = document.createElement('div');
+  grid.className = 'wheel-choices-grid';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'wheel-choice-btn';
+    btn.innerHTML = `${opt.p}<span class="wc-name">${opt.name}</span>`;
+    btn.style.fontFamily = "'Guttman Yad-Brush', cursive";
+    btn.onclick = () => handleWheelChoice(btn, opt.p === letter.p, letter, feedback, grid);
+    grid.appendChild(btn);
+  });
+  resultEl.appendChild(grid);
+}
+
+function handleWheelChoice(btn, correct, letter, feedback, grid) {
+  grid.querySelectorAll('.wheel-choice-btn').forEach(b => b.disabled = true);
+  if (correct) {
+    btn.classList.add('correct');
+    wheelScore++;
+    wheelStreak++;
+    document.getElementById('wheel-score').textContent = wheelScore;
+    document.getElementById('wheel-streak').textContent = wheelStreak;
+    feedback.innerHTML = `<span style="color:var(--success)">✓ נכון! ${letter.name} — ${letter.sound}</span>`;
+    speakName(letter.name);
+  } else {
+    btn.classList.add('wrong');
+    wheelStreak = 0;
+    document.getElementById('wheel-streak').textContent = 0;
+    feedback.innerHTML = `<span style="color:#c97a8a">✗ לא נכון</span>`;
+    grid.querySelectorAll('.wheel-choice-btn').forEach(b => {
+      // find the correct one and highlight it
+      // we stored the letter via closure — check textContent includes letter.p
+      if (b.querySelector('.wc-name')?.textContent === letter.name) b.classList.add('correct');
+    });
+  }
+  // Show spin again button after a moment
+  setTimeout(() => {
+    document.getElementById('wheelSpinBtn').disabled = false;
+  }, 800);
+}
+
 buildLetterGrid();
 startQuiz();
+
 </script>
 </body>
 </html>
